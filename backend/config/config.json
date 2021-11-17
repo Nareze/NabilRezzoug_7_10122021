@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "infinity",
+    "database": "database_development_new",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "infinity",
+    "database": "database_test_new",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "infinity",
+    "database": "database_production_new",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
