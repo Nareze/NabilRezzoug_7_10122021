@@ -6,5 +6,6 @@ const multer = require('../middlewares/multer-config')
 
 router.post("/create", multer, messageCtrl.createMessage);
 router.get("/", messageCtrl.listMessage);
+//delete
 
 module.exports = router;

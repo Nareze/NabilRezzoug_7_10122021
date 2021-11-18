@@ -4,46 +4,15 @@ const jwt = require("jsonwebtoken");
 const models = require("../models");
 const cryptoJS = require("crypto-js");
 const emailtoCrypt = "mypassword";
-const emailRegex =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const passwordRegex = /^[a-zA-Z]\w{3,14}$/;
 const JWT_SIGN_SECRET = "mdpsecret";
 
 
 
-
-
-
-
-
 exports.signup = (req, res, next) => {
-  // checking des inputs //
-  if (
-    req.body.email == null ||
-    req.body.username == null ||
-    req.body.password == null
-  ) {
-    return res.status(400).json({ error: "missing parameters" });
-  }
-  if (req.body.username.length >= 13 || req.body.username.length <= 4) {
-    return res
-      .status(400)
-      .json({ error: "wrong username (must have 5-12 characters)" });
-  }
-  if (!emailRegex.test(req.body.email)) {
-    return res.status(400).json({ error: "email is not valid" });
-  }
-  if (!passwordRegex.test(req.body.password)) {
-    return res.status(400).json({
-      error:
-        "password invalid (must have 4-15 characters only letters, numbers and underscore",
-    });
-  }
 
   const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
 
   models.User.findOne({
-    attributes: ["username"],
     where: { username: req.body.username },
   }) .then(usernameFound =>{
     if (usernameFound){
@@ -51,7 +20,6 @@ exports.signup = (req, res, next) => {
     }
     else {
       models.User.findOne({
-        attributes: ["email"],
         where: { email: emailCrypted },
       }) 
       .then(emailFound => {
@@ -65,6 +33,7 @@ exports.signup = (req, res, next) => {
               email: emailCrypted,
               username: req.body.username,
               password: hash,
+              bio:req.body.bio,
               isAdmin:0,
             })
           })
@@ -82,9 +51,6 @@ exports.signup = (req, res, next) => {
 
 
 exports.login = (req, res, next) => {
-  if (req.body.email == null || req.body.password == null) {
-    return res.status(400).json({ error: "missing parameters" });
-  }
 
   const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
 

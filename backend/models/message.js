@@ -11,17 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.Message.belongsTo(models.User, {
-        foreignKey: {
-          allowNull: false
-        }
-      });
     }
   };
   Message.init({
-    content: DataTypes.STRING,
+    idUsers: DataTypes.INTEGER,
+    titre: DataTypes.STRING,
     image: DataTypes.STRING,
-    like: DataTypes.INTEGER
+    contenu: DataTypes.STRING,
+    isLike: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Message',
