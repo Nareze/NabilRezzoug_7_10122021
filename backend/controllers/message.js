@@ -21,7 +21,7 @@ exports.createMessage = (req, res, next) => {
 
     .then((user) => {
       if (user !== null) {
-        let content = req.body.content;
+        let contenu = req.body.contenu;
         let imageUrl;
 
         if (req.file !== undefined) {
@@ -29,9 +29,9 @@ exports.createMessage = (req, res, next) => {
             req.file.filename
           }`;
           models.Message.create({
-            content: content,
+            contenu: req.body.contenu,
             image: imageUrl,
-            UserId: user.id,
+            UserId: user.id,  // majuscules sensible à la casse
           })
             .then((message) => {
               res.status(201).json(message);
@@ -41,9 +41,9 @@ exports.createMessage = (req, res, next) => {
             });
         }
 
-        if (content) {
+        if (contenu) {
           models.Message.create({
-            content: content,
+            contenu: req.body.contenu,
             UserId: user.id,
           })
             .then((message) => {
@@ -54,7 +54,7 @@ exports.createMessage = (req, res, next) => {
             });
         }
 
-        if (content == null && imageUrl == null) {
+        if (contenu == null && imageUrl == null) {
           res.status(400).json({ error: "Empty message" });
         }
       } else {
@@ -66,12 +66,7 @@ exports.createMessage = (req, res, next) => {
 
 exports.listMessage = (req, res, next) => {
   models.Message.findAll({
-    include: [
-      {
-        model: models.User,
-        attributes: ["username"],
-      },
-    ],
+    attributes: ["createdAt", "titre", "contenu", "image" ],
     order: [["createdAt", "DESC"]],
   })
     .then((posts) => {

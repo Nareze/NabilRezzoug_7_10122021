@@ -23,6 +23,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user", userRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/message", messageRoutes);
 
 module.exports = app;

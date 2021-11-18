@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       idUsers: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+
       },
       idPosts: {
         type: Sequelize.INTEGER

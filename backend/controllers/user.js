@@ -89,7 +89,7 @@ exports.login = (req, res, next) => {
       }
     })
 
-    .catch(function (err) {
+    .catch((err) => {
       return res.status(500).json({ error: "unable to verify user" });
     });
 };
@@ -109,7 +109,7 @@ exports.profile = (req, res, next) => {
     attributes: ["id", "email", "username"],
     where: { id: userId },
   })
-    .then(function (user) {
+    .then((user) => {
       if (!user) {
         res.status(404).json({ error: "user not found" });
       } else {
@@ -117,10 +117,27 @@ exports.profile = (req, res, next) => {
         console.log("contenu de user //////// : " + JSON.stringify(user));
       }
     })
-    .catch(function (err) {
+    .catch((err) => {
       res.status(500).json({ error: "cannot fetch user" });
     });
 };
+
+exports.profiles = (req, res, next) => {
+
+  models.User.findAll({
+    attributes: ["username", "bio", "image", "createdAt" ],
+  })
+    .then((user) => {
+      console.log(user)
+      if (user != null) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: "Pas de users à afficher" });
+      }
+    })
+    .catch((err) => res.status(500).json(err));
+
+}
 
 exports.deleteProfile = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];

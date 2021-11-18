@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.Message.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false
+        }
+      });
     }
   };
   Message.init({
-    idUsers: DataTypes.INTEGER,
+    // idUsers: DataTypes.INTEGER,
     titre: DataTypes.STRING,
     image: DataTypes.STRING,
     contenu: DataTypes.STRING,

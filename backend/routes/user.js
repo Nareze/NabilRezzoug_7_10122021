@@ -11,6 +11,7 @@ const checkInput = require('../middlewares/checkInput')
 router.post("/signup", checkInput.checkSignUpInput, emailCtrl, passwordCtrl, userCtrl.signup);
 router.post("/login", checkInput.checkLoginInput, userCtrl.login);
 router.get("/profile", auth, userCtrl.profile)
+router.get("/profiles", userCtrl.profiles)
 router.delete("/delete", auth, userCtrl.deleteProfile)
 //update
 
