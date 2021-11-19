@@ -10,6 +10,7 @@ exports.createMessage = (req, res, next) => {
   // let userId = jwtUtils.getUserId(headerAuth);
   // console.log= userId;
 
+
   const token = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
   const userId = decodedToken.userId;
@@ -30,6 +31,7 @@ exports.createMessage = (req, res, next) => {
           }`;
           models.Message.create({
             contenu: req.body.contenu,
+            titre: req.body.titre,
             image: imageUrl,
             UserId: user.id,  // majuscules sensible à la casse
           })
@@ -44,6 +46,7 @@ exports.createMessage = (req, res, next) => {
         if (contenu) {
           models.Message.create({
             contenu: req.body.contenu,
+            titre: req.body.titre,
             UserId: user.id,
           })
             .then((message) => {
@@ -64,17 +67,68 @@ exports.createMessage = (req, res, next) => {
     .catch((error) => res.status(500).json(error));
 };
 
-exports.listMessage = (req, res, next) => {
+exports.getAllUsersMessages = (req, res, next) => {
   models.Message.findAll({
     attributes: ["createdAt", "titre", "contenu", "image" ],
     order: [["createdAt", "DESC"]],
   })
-    .then((posts) => {
-      if (posts.length > null) {
-        res.status(200).json(posts);
+    .then((messages) => {
+      if (messages.length > null) {
+        res.status(200).json(messages);
       } else {
-        res.status(404).json({ error: "Pas de post à afficher" });
+        res.status(404).json({ error: "Pas de messages à afficher" });
       }
     })
     .catch((err) => res.status(500).json(err));
+};
+
+
+
+exports.getUserMessages = (req, res, next) => {
+
+  let username = req.body.username;
+
+  models.User.findOne({
+    attributes: ["id", "email", "username"],
+    where: { username: username },
+  })
+  .then((user) => {
+      console.log("contenu de user 1 ///////", JSON.stringify(user))
+      models.Message.findAll({
+        attributes: ["contenu", "titre", "image"],
+        where: { UserId: user.id },
+      })
+        .then((message) => {
+          console.log("contenu de user 1 ///////", JSON.stringify(message))
+          if (message) {
+            res.status(200).json(message);
+          } else {
+            res.status(404).json({ error: "Pas de messages à afficher" });
+          }
+        })
+        .catch((err) => res.status(500).json(err));
+})
+
+}
+
+
+exports.getOneUserMessages = (req, res, next) => {
+
+  let titre = req.body.titre;
+
+  models.Message.findOne({
+    attributes: ["titre", "contenu", "image"],
+    where: { titre: titre },
+  })
+  .then((message) => {
+    if (!message) {
+      res.status(404).json({ error: "Rien à afficher" });
+    } else {
+      res.status(201).json(message);
+      console.log("contenu de message 2 //////// : " + JSON.stringify(message));
+    }
+  })
+  .catch((err) => {
+    res.status(500).json({ error: "cannot fetch message" });
+  });
 };

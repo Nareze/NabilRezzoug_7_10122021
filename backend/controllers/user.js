@@ -33,8 +33,8 @@ exports.signup = (req, res, next) => {
               email: emailCrypted,
               username: req.body.username,
               password: hash,
-              bio:req.body.bio,
-              isAdmin:0,
+              bio: req.body.bio,
+              isAdmin: 0,
             })
           })
           .then(() => {
@@ -46,8 +46,6 @@ exports.signup = (req, res, next) => {
   })
 
 };
-
-
 
 
 exports.login = (req, res, next) => {
@@ -94,6 +92,7 @@ exports.login = (req, res, next) => {
     });
 };
 
+
 exports.profile = (req, res, next) => {
   // let headerAuth = req.headers['authorization'];
   // let userId = jwtUtils.getUserId(headerAuth);
@@ -109,21 +108,21 @@ exports.profile = (req, res, next) => {
     attributes: ["id", "email", "username"],
     where: { id: userId },
   })
-    .then((user) => {
-      if (!user) {
-        res.status(404).json({ error: "user not found" });
-      } else {
-        res.status(201).json(user);
-        console.log("contenu de user //////// : " + JSON.stringify(user));
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "cannot fetch user" });
-    });
+  .then((user) => {
+    if (!user) {
+      res.status(404).json({ error: "user not found" });
+    } else {
+      res.status(201).json(user);
+      console.log("contenu de user //////// : " + JSON.stringify(user));
+    }
+  })
+  .catch((err) => {
+    res.status(500).json({ error: "cannot fetch user" });
+  });
 };
 
-exports.profiles = (req, res, next) => {
 
+exports.profiles = (req, res, next) => {
   models.User.findAll({
     attributes: ["username", "bio", "image", "createdAt" ],
   })
@@ -136,8 +135,8 @@ exports.profiles = (req, res, next) => {
       }
     })
     .catch((err) => res.status(500).json(err));
-
 }
+
 
 exports.deleteProfile = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
@@ -158,3 +157,4 @@ exports.deleteProfile = (req, res, next) => {
     }
   });
 };
+
