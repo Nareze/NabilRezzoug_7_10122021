@@ -19,6 +19,6 @@ exports.checkLoginInput = (req, res, next) => {
     if (req.body.email == null || req.body.password == null) {
         return res.status(400).json({ error: "missing parameters" });
       } else {
-          next()
+        next()
       }
 }
