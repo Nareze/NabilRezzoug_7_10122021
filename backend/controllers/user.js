@@ -87,9 +87,11 @@ exports.profile = (req, res, next) => {
   // if (userId < 0)
   // return res.status(400).json({ 'error' : 'wrong token'});
 
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  const userId = decodedToken.userId;
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  // const userId = decodedToken.userId;
+
+  userId = req.params.id;
 
   models.User.findOne({
     attributes: ["id", "email", "username"],
@@ -120,14 +122,16 @@ exports.profiles = (req, res, next) => {
 };
 
 exports.deleteProfile = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  const userId = decodedToken.userId;
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  // const userId = decodedToken.userId;
+
+  userId = req.params.id;
 
   models.User.findOne({
-    where: {id: userId}
+    where: { id: userId }
   }).then((user) => {
-    console.log("contenu de user //////:", userId)
+    console.log("Contenu de user //////:", userId)
     if (user){
       models.User.destroy({
         where: { id: user.id}
@@ -142,10 +146,11 @@ exports.deleteProfile = (req, res, next) => {
 };
 
 exports.modify = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  console.log("decodedToken //////////", decodedToken);
-  const userId = decodedToken.userId;
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  // const userId = decodedToken.userId;
+
+  const userId = req.params.id;
 
   const newPassword = req.body.password;
   const newUsername = req.body.username;

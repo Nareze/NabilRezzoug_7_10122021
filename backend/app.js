@@ -1,10 +1,14 @@
 const express = require("express");
 const app = express();
 
+const morgan = require("morgan");
+
 const userRoutes = require("./routes/user");
 const messageRoutes = require("./routes/message");
 
 const path = require("path");
+
+app.use(morgan("dev"));
 
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.json({ limit: "30mb", extended: true }));

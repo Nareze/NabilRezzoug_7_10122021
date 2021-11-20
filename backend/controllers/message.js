@@ -10,9 +10,11 @@ exports.createMessage = (req, res, next) => {
   // let userId = jwtUtils.getUserId(headerAuth);
   // console.log= userId;
 
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  const userId = decodedToken.userId;
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  // const userId = decodedToken.userId;
+
+  const userId = req.params.id;
 
   models.User.findOne({
     attributes: ["id", "email", "username"],
@@ -82,11 +84,11 @@ exports.getAllUsersMessages = (req, res, next) => {
 };
 
 exports.getUserMessages = (req, res, next) => {
-  let username = req.body.username;
+  let userId = req.params.id;
 
   models.User.findOne({
     attributes: ["id", "email", "username"],
-    where: { username: username },
+    where: { id: userId },
   }).then((user) => {
     console.log("contenu de user 1 ///////", JSON.stringify(user));
     models.Message.findAll({
@@ -128,13 +130,13 @@ exports.getOneUserMessages = (req, res, next) => {
 };
 
 
-exports.deleteMessage = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  const userId = decodedToken.userId;
+exports.removeMessage = (req, res, next) => {
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  // const userId = decodedToken.userId;
 
+  const userId = req.params.id;
   const messageToDelete = req.body.messageId;
-
 
   models.User.findOne({
     attributes: ['id', 'email', 'username', 'isAdmin'],
