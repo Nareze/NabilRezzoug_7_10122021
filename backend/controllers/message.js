@@ -1,11 +1,6 @@
 const models = require("../models");
-const jwtUtils = require("../utils/jwt.utils");
-const jwt = require("jsonwebtoken");
-const JWT_SIGN_SECRET = "mdpsecret";
 
 exports.createMessage = (req, res, next) => {
-  // // identifier le créateur du message
-
   // let headerAuth = req.headers['authorization'];
   // let userId = jwtUtils.getUserId(headerAuth);
   // console.log= userId;
@@ -74,10 +69,10 @@ exports.getAllUsersMessages = (req, res, next) => {
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
-      if (messages.length > null) {
+      if (messages != null) {
         res.status(200).json(messages);
       } else {
-        res.status(404).json({ error: "Pas de messages à afficher" });
+        res.status(404).json({ error: "Cannot display messages" });
       }
     })
     .catch((err) => res.status(500).json(err));
@@ -108,11 +103,11 @@ exports.getUserMessages = (req, res, next) => {
 };
 
 exports.getOneUserMessages = (req, res, next) => {
-  let titre = req.body.titre;
+  let id = req.params.id;
 
   models.Message.findOne({
     attributes: ["titre", "contenu", "image"],
-    where: { titre: titre },
+    where: { id: id },
   })
     .then((message) => {
       if (!message) {
@@ -124,37 +119,31 @@ exports.getOneUserMessages = (req, res, next) => {
         );
       }
     })
-    .catch((err) => {
-      res.status(500).json({ error: "cannot fetch message" });
+    .catch(() => {
+      res.status(500).json({ error });
     });
 };
 
 
 exports.removeMessage = (req, res, next) => {
-  // const token = req.headers.authorization.split(" ")[1];
-  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  // const userId = decodedToken.userId;
-
   const userId = req.params.id;
-  const messageToDelete = req.body.messageId;
-
+  const messageId = req.body.messageId;
+  // On cherche le propriétaire du message
   models.User.findOne({
     attributes: ['id', 'email', 'username', 'isAdmin'],
     where: { id: userId }
   })
-  // On trouve l'utilisateur selectionné
   .then(user => {
-    console.log("contenu de user ////////", JSON.stringify(user.id))
-    if (user || user.isAdmin == true){
-      // Pour supprimer un message l'utilisateur ne peut être que l'admin ou le proprietaire
+    // Pour supprimer un message on verifie que l'utilisateur est soit l'admin ou soit le proprietaire
+     if (user || user.isAdmin == true){
+    // Selection du message à supprimer
       models.Message.findOne({
-        where:{id: messageToDelete}
+        where:{id: messageId}
       })
-      // Selection du message à supprimer
       .then(message => {
         console.log("contenu de message /////////", JSON.stringify(message.UserId))
-        if (message.UserId == userId){
-        // L'utilisateur ne pourra supprimmer que les messages qui lui appartient
+    // L'utilisateur ne pourra supprimmer que les messages lui appartenant
+        if (message.UserId == userId || user.isAdmin == true){
         models.Message.destroy({
           where: { id: message.id }
         })
@@ -164,9 +153,11 @@ exports.removeMessage = (req, res, next) => {
         res.status(405).json({ error: "Not allowed to delete others messages" });
       }
       })
-    } else {
+    }  
+    else {
       res.status(405).json({ error: "Not allowed to delete messages" });
     }
   })
-  .catch(err => res.status(500).json(err))
+  
+  .catch(() => res.status(500).json({error: "Unable to delete"}))
 };

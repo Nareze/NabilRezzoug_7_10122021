@@ -6,9 +6,10 @@ const morgan = require("morgan");
 const userRoutes = require("./routes/user");
 const messageRoutes = require("./routes/message");
 
-const path = require("path");
-
 app.use(morgan("dev"));
+
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use(express.json({ limit: "30mb", extended: true }));

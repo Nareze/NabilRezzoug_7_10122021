@@ -1,11 +1,8 @@
 const bcrypt = require("bcrypt");
-const jwtUtils = require("../utils/jwt.utils");
 const jwt = require("jsonwebtoken");
 const models = require("../models");
 const cryptoJS = require("crypto-js");
 const emailtoCrypt = "mypassword";
-const JWT_SIGN_SECRET = "mdpsecret";
-const passwordSchema = require("../utils/passwordValidator");
 
 exports.signup = (req, res, next) => {
   const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
@@ -14,18 +11,18 @@ exports.signup = (req, res, next) => {
     where: { username: req.body.username },
   }).then((usernameFound) => {
     if (usernameFound) {
-      return res.status(409).json({ error: "Username already exist" }); // verification de l'username
+      return res.status(409).json({ error: "Username already exists" }); // verification de l'username
     } else {
       models.User.findOne({
         where: { email: emailCrypted },
       }).then((emailFound) => {
         if (emailFound) {
-          return res.status(409).json({ error: "Email already exist" }); // verification du mail
+          return res.status(409).json({ error: "Email already exists" }); // verification du mail
         } else {
           bcrypt
             .hash(req.body.password, 10)
             .then((hash) => {
-              const newUser = models.User.create({
+              models.User.create({
                 email: emailCrypted,
                 username: req.body.username,
                 password: hash,
@@ -33,11 +30,12 @@ exports.signup = (req, res, next) => {
                 isAdmin: 0,
               });
             })
+
             .then(() => {
               return res.status(201).json({ message: "Utilisateur créé !" });
             });
-        }
-      });
+          }
+      }).catch(() => res.status(500).json());
     }
   });
 };
@@ -62,18 +60,27 @@ exports.login = (req, res, next) => {
           if (!valid) {
             res.status(401).json({ message: "Incorrect password" });
           } else {
-            res.status(200).json({
-              userId: user.id,
-              token: jwt.sign(
-                { userId: user.id, isAdmin: user.isAdmin },
-                JWT_SIGN_SECRET,
-                {
-                  expiresIn: "1h",
-                }
-              ),
-            });
+            // res.status(200).json({
+              // userId: user.id,
+              // token :jwt.sign(
+              //   { userId: user.id, isAdmin: user.isAdmin },
+              //   JWT_SIGN_SECRET,
+              //   {
+              //     expiresIn: "1h",
+              //   }
+              // ),
+
+              const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, "JWT_SIGN_SECRET", { expiresIn: "1h"});
+              return res.cookie("access_token", token, {
+                  httpOnly: true,
+                  // secure: process.env.NODE_ENV === "production",
+                }).status(200).json({ Response : "User n°" +  user.id + " Logged in successfully" });
+
+            // });
           }
-        });
+
+
+        }).catch(() => res.status(500).json());
     } else {
       res.status(401).json({ message: "User not found" });
     }
@@ -83,9 +90,6 @@ exports.login = (req, res, next) => {
 exports.profile = (req, res, next) => {
   // let headerAuth = req.headers['authorization'];
   // let userId = jwtUtils.getUserId(headerAuth);
-
-  // if (userId < 0)
-  // return res.status(400).json({ 'error' : 'wrong token'});
 
   // const token = req.headers.authorization.split(" ")[1];
   // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
@@ -103,52 +107,47 @@ exports.profile = (req, res, next) => {
       res.status(201).json(user);
       console.log("contenu de user //////// : " + JSON.stringify(user));
     }
-  });
-};
+    
+  })
+  .catch(() => res.status(500).json());
+  };
+
 
 exports.profiles = (req, res, next) => {
   models.User.findAll({
     attributes: ["username", "bio", "image", "createdAt"],
   })
     .then((user) => {
-      console.log(user);
       if (user != null) {
         res.status(200).json(user);
       } else {
         res.status(404).json({ error: "Pas de users à afficher" });
       }
     })
-    .catch((err) => res.status(500).json(err));
+    .catch(() => res.status(500).json());
 };
 
 exports.deleteProfile = (req, res, next) => {
-  // const token = req.headers.authorization.split(" ")[1];
-  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  // const userId = decodedToken.userId;
 
   userId = req.params.id;
 
   models.User.findOne({
     where: { id: userId }
   }).then((user) => {
-    console.log("Contenu de user //////:", userId)
-    if (user){
+    if (user.id == req.params.id || user.isAdmin == true) {
       models.User.destroy({
         where: { id: user.id}
       })
       .then(() => res.status(200).json({ message: "User deleted"}))
-      .catch((err) => console.log(err))
+      .catch(() => res.status(500).json({ message: "Not allowed to delete other users"}));
     } else {
       res.status(405).json({ message: "Not allowed to delete"})
     }
+  }).catch(() => res.status(500).json({ message: "Not allowed to delete"}));
 
-  })
 };
 
 exports.modify = (req, res, next) => {
-  // const token = req.headers.authorization.split(" ")[1];
-  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  // const userId = decodedToken.userId;
 
   const userId = req.params.id;
 
@@ -156,43 +155,31 @@ exports.modify = (req, res, next) => {
   const newUsername = req.body.username;
   const newBio = req.body.bio;
 
-  models.User.findOne({
-    where: { id: userId },
-  })
+    models.User.findOne({
+      where: { id: userId },
+    })
     .then((user) => {
-      if (passwordSchema.validate(newPassword)) {
-        bcrypt
-          .hash(newPassword, 10)
+
+      if ((newPassword) || (user.username !== newUsername) || (user.bio !== newBio) )  {
+
+      bcrypt
+        .hash(newPassword, 10)
           .then((hash) => {
-            models.User.update({ password: hash }, { where: { id: user.id } });
+            models.User.update({ password: hash,username : newUsername, bio: newBio }, { where: { id: user.id } });
           })
           .then(() => {
-            return res.status(201).json({ message: "Password updated" });
+            return res.status(201).json({ message: "Changes updated" });
           });
       } else {
-        res.status(406).json("Password is not strong enough");
+        res.status(409).json("No changes");
       }
 
-      if (user.username !== newUsername) {
-        models.User.update(
-          { username: newUsername },
-          { where: { id: user.id } }
-        ).then(() => {
-          return res.status(201).json({ message: "Username updated" });
-        });
-      } else {
-        res.status(406).json("Username is the same");
-      }
-
-      if (user.bio !== newBio) {
-        models.User.update({ bio: newBio }, { where: { id: user.id } }).then(
-          () => {
-            return res.status(201).json({ message: "Bio updated" });
-          }
-        );
-      } else {
-        res.status(406).json("Bio is the same");
-      }
-    })
-    .catch((err) => res.status(500).json(err));
+      }).catch(() => res.status(500).json());
 };
+
+exports.logout = (req, res, next) => {
+  return res
+  .clearCookie("access_token")
+  .status(200)
+  .json({ message: "Successfully logged out" }).catch(() => res.status(500).json());
+}
