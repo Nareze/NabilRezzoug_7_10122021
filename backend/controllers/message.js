@@ -63,6 +63,7 @@ exports.createMessage = (req, res, next) => {
     .catch((error) => res.status(500).json(error));
 };
 
+
 exports.getAllUsersMessages = (req, res, next) => {
   models.Message.findAll({
     attributes: ["createdAt", "titre", "contenu", "image"],
@@ -102,7 +103,7 @@ exports.getUserMessages = (req, res, next) => {
   });
 };
 
-exports.getOneUserMessages = (req, res, next) => {
+exports.getOneUserMessage = (req, res, next) => {
   let id = req.params.id;
 
   models.Message.findOne({
@@ -158,6 +159,5 @@ exports.removeMessage = (req, res, next) => {
       res.status(405).json({ error: "Not allowed to delete messages" });
     }
   })
-  
   .catch(() => res.status(500).json({error: "Unable to delete"}))
 };

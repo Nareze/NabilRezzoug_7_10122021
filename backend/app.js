@@ -8,6 +8,7 @@ const messageRoutes = require("./routes/message");
 
 app.use(morgan("dev"));
 
+
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
