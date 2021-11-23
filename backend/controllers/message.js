@@ -70,6 +70,7 @@ exports.getAllUsersMessages = (req, res, next) => {
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
+      console.log("messages/////////", messages)
       if (messages != null) {
         res.status(200).json(messages);
       } else {

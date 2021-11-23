@@ -9,8 +9,8 @@ const passwordCtrl = require('../middlewares/checkPassword')
 const checkInput = require('../middlewares/checkInput')
 
 
-router.post("/signup", checkInput.checkSignUp, checkInput.checkUsername, emailCtrl, passwordCtrl, userCtrl.signup);
-router.post("/login", checkInput.checkLoginInput, userCtrl.login);
+router.post("/signup", /*checkInput.checkSignUp, checkInput.checkUsername, emailCtrl, passwordCtrl,*/ userCtrl.signup);
+router.post("/login", /*checkInput.checkLoginInput,*/ userCtrl.login);
 router.get("/profiles", auth, userCtrl.profiles)    // voir tout les profils
 
 router.get("/profile/:id", auth, userCtrl.profile)      // voir un profil

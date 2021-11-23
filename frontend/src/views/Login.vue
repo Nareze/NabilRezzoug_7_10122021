@@ -1,38 +1,80 @@
 <template>
-
-<form action="/action_page.php" method="post">
+  <form v-on:submit.prevent="submitForm">
+    <div class="container">
     <h1>Connexion</h1>
     <p>Bienvenue</p>
-    <hr>
+    <hr />
 
-  <div class="container">
-    <label for="uname"><b>Nom d'utilisateur</b></label>
-    <input type="text" placeholder="Entrer le nom d'utilisateur" name="uname" required>
 
-    <label for="psw"><b>Mot de passe</b></label>
-    <input type="password" placeholder="Enter le mot de passe" name="psw" required>
-        
-    <button type="submit">Connexion</button>
-  </div>
-</form>
-    
+      <label for="email"><b>Adresse Mail</b></label>
+      <input
+        type="text"
+        placeholder="Entrer l'Email"
+        name="email"
+        required
+        v-model="form.email"
+      />
+
+      <label for="psw"><b>Mot de passe</b></label>
+      <input
+        type="password"
+        placeholder="Enter le mot de passe"
+        name="password"
+        required
+        v-model="form.password"
+      />
+
+      <button type="submit">Connexion</button>
+    </div>
+  </form>
 </template>
 
-
 <script>
+import axios from "axios";
 
 export default {
-    name: "Login",
-}
+  name: "Login",
+
+  data() {
+    return {
+      form: {
+        email: "",
+        password: "",
+      },
+    };
+  },
+
+  methods: {
+    submitForm() {
+      axios
+        .post("http://localhost:3000/api/user/login", this.form)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+};
 </script>
 
-
 <style scoped>
+form {
+  text-align: center;
+  margin-top: 50px;
+  border: 3px solid #f1f1f1 !important;
+}
 
-body {font-family: Arial, Helvetica, sans-serif;}
-form {border: 3px solid #f1f1f1; text-align: center;margin-top: 50px;}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
 
-input[type=text], input[type=password] {
+input[type="text"],
+input[type="password"] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -41,20 +83,9 @@ input[type=text], input[type=password] {
   background: #f1f1f1;
 }
 
-input[type=text]:focus, input[type=password]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   outline: none;
-}
-
-
-button {
-  background-color: #182B4A !important;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 25px;
 }
 
 hr {
@@ -62,27 +93,30 @@ hr {
   margin-bottom: 25px;
 }
 
+button {
+  background-color: #182b4a !important;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
 button:hover {
   opacity: 0.8;
-  background-color: #E62600 !important;
+  background-color: #e62600 !important;
   transition: 300ms;
 }
 
 .container {
-  padding: 16px;
+  padding: 0pc 15px 15px 15px;
 }
-
-span.psw {
-  float: right;
-  padding-top: 16px;
-}
-
 
 @media screen and (max-width: 300px) {
-  span.psw {
-     display: block;
-     float: none;
+  .signupbtn {
+    width: 100%;
   }
 }
-
 </style>
