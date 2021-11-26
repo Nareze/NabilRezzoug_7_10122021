@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const models = require("../models");
 const cryptoJS = require("crypto-js");
 const emailtoCrypt = "mypassword";
+const JWT_SIGN_SECRET = "mdpsecret";
 
 exports.signup = (req, res, next) => {
   const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
@@ -18,7 +19,7 @@ exports.signup = (req, res, next) => {
       }).then((emailFound) => {
         if (emailFound) {
           return res.status(409).json({ error: "Email already exists" }); // verification du mail
-        } else {
+          } else {
           bcrypt
             .hash(req.body.password, 10)
             .then((hash) => {
@@ -50,33 +51,33 @@ exports.login = (req, res, next) => {
     console.log("contenu de user 1 ////////// :" + JSON.stringify(user));
 
     if (user) {
-      console.log(
-        "contenu de user 2 ////////// :" + JSON.stringify(user.password)
-      );
       bcrypt
         .compare(req.body.password, user.password)
 
         .then((valid) => {
+          console.log("contenu valide ////////", valid)
           if (!valid) {
             res.status(401).json({ message: "Incorrect password" });
           } else {
-            // res.status(200).json({
-              // userId: user.id,
-              // token :jwt.sign(
-              //   { userId: user.id, isAdmin: user.isAdmin },
-              //   JWT_SIGN_SECRET,
-              //   {
-              //     expiresIn: "1h",
-              //   }
-              // ),
+            res.status(200).json({
+              userId: user.id,
+              token :jwt.sign(
+                { userId: user.id, isAdmin: user.isAdmin },
+                JWT_SIGN_SECRET,
+                {
+                  expiresIn: "1h",
+                }
+              ),
+            });
 
-              const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, "JWT_SIGN_SECRET", { expiresIn: "1h"});
-              return res.cookie("access_token", token, {
-                  httpOnly: true,
-                  // secure: process.env.NODE_ENV === "production",
-                }).status(200).json({ Response : "User n°" +  user.id + " Logged in successfully" });
+            //   const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, "JWT_SIGN_SECRET", { expiresIn: "1h"});
+            //   return res.cookie("access_token", token, {
+            //       httpOnly: true,
+            //       maxAge: 900000,
+            //       // secure: process.env.NODE_ENV === "production",
+            //     }).status(200).json({ Response : "User n°" +  user.id + " Logged in successfully" });
 
-            // });
+            
           }
 
 

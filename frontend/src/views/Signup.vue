@@ -83,7 +83,7 @@ export default {
 <style scoped>
 form {
   text-align: center;
-  margin-top: 50px;
+  margin-top: 25px;
   border: 3px solid #f1f1f1 !important;
 }
 

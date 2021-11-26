@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   Post.init({
     idUsers: DataTypes.INTEGER,
     idPosts: DataTypes.INTEGER,
-    contenu: DataTypes.STRING
+    contenu: DataTypes.STRING,
+    onDelete: 'cascade'
   }, {
     sequelize,
     modelName: 'Post',

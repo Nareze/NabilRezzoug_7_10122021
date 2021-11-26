@@ -6,7 +6,7 @@
     <hr />
 
 
-      <label for="email"><b>Adresse Mail</b></label>
+      <label for="email"  ><b>Adresse Mail</b></label>
       <input
         type="text"
         placeholder="Entrer l'Email"
@@ -31,6 +31,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "Login",
@@ -40,30 +41,41 @@ export default {
       form: {
         email: "",
         password: "",
+        token:null
       },
     };
+  },
+
+  computed: {
+    ...mapState(["user"])
   },
 
   methods: {
     submitForm() {
       axios
         .post("http://localhost:3000/api/user/login", this.form)
-        .then((response) => {
-          console.log(response);
-        })
+        // .then((response) => {
+        //   console.log(response);
+        // })
+        .then(response => {
+            localStorage.setItem('token',response.data.token)
+          })
         .catch((error) => {
           console.log(error);
         });
     },
   },
+
 };
 </script>
 
 <style scoped>
+
 form {
   text-align: center;
-  margin-top: 50px;
+  margin-top: 25px;
   border: 3px solid #f1f1f1 !important;
+  
 }
 
 body {
