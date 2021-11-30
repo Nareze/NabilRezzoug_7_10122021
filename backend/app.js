@@ -3,6 +3,8 @@ const app = express();
 
 const morgan = require("morgan");
 
+const path = require("path");
+
 const userRoutes = require("./routes/user");
 const messageRoutes = require("./routes/message");
 
@@ -29,6 +31,7 @@ app.use((req, res, next) => {
 });
 
 
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
 

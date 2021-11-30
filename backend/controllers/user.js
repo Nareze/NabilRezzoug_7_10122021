@@ -22,19 +22,28 @@ exports.signup = (req, res, next) => {
           } else {
           bcrypt
             .hash(req.body.password, 10)
-            .then((hash) => {
+            .then((hash) => {                 // création de l'utilisateur et envoi du token
               models.User.create({
                 email: emailCrypted,
                 username: req.body.username,
                 password: hash,
                 bio: req.body.bio,
                 isAdmin: 0,
-              });
+              })
+            .then((user) =>{
+              res.status(201).json({
+                userId: user.id,
+                username:user.username,
+                token :jwt.sign(
+                  { userId: user.id, isAdmin: user.isAdmin },
+                  JWT_SIGN_SECRET,
+                  {
+                    expiresIn: "1h",
+                  }
+                  ),
+                  })
             })
-
-            .then(() => {
-              return res.status(201).json({ message: "Utilisateur créé !" });
-            });
+            })
           }
       }).catch(() => res.status(500).json());
     }
@@ -92,14 +101,14 @@ exports.profile = (req, res, next) => {
   // let headerAuth = req.headers['authorization'];
   // let userId = jwtUtils.getUserId(headerAuth);
 
-  // const token = req.headers.authorization.split(" ")[1];
-  // const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-  // const userId = decodedToken.userId;
+  const token = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const userId = decodedToken.userId;
 
-  userId = req.params.id;
+  // userId = req.params.id;
 
   models.User.findOne({
-    attributes: ["id", "email", "username"],
+    attributes: ["id", "username", "bio", "createdAt"],
     where: { id: userId },
   }).then((user) => {
     if (!user) {
@@ -111,7 +120,7 @@ exports.profile = (req, res, next) => {
     
   })
   .catch(() => res.status(500).json());
-  };
+};
 
 
 exports.profiles = (req, res, next) => {
@@ -130,12 +139,14 @@ exports.profiles = (req, res, next) => {
 
 exports.deleteProfile = (req, res, next) => {
 
-  userId = req.params.id;
+  const token = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const userId = decodedToken.userId;
 
   models.User.findOne({
     where: { id: userId }
   }).then((user) => {
-    if (user.id == req.params.id || user.isAdmin == true) {
+    if (user.id == userId || user.isAdmin == true) {
       models.User.destroy({
         where: { id: user.id}
       })
@@ -150,7 +161,9 @@ exports.deleteProfile = (req, res, next) => {
 
 exports.modify = (req, res, next) => {
 
-  const userId = req.params.id;
+  const token = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const userId = decodedToken.userId;
 
   const newPassword = req.body.password;
   const newUsername = req.body.username;
@@ -161,18 +174,29 @@ exports.modify = (req, res, next) => {
     })
     .then((user) => {
 
-      if ((newPassword) || (user.username !== newUsername) || (user.bio !== newBio) )  {
-
+      if ((newPassword!=="") )  {
       bcrypt
         .hash(newPassword, 10)
           .then((hash) => {
-            models.User.update({ password: hash,username : newUsername, bio: newBio }, { where: { id: user.id } });
-          })
+            models.User.update({ password: hash }, { where: { id: user.id } })
+           })
           .then(() => {
             return res.status(201).json({ message: "Changes updated" });
           });
-      } else {
-        res.status(409).json("No changes");
+      } if((newUsername!=="")){
+
+        models.User.update({ username : newUsername }, { where: { id: user.id } })
+        .then(() => {
+          return res.status(201).json({ message: "Changes updated" });
+        });
+
+      } if((newBio!=="")) {
+
+        models.User.update({ bio: newBio }, { where: { id: user.id } })
+        .then(() => {
+          return res.status(201).json({ message: "Changes updated" });
+        });
+
       }
 
       }).catch(() => res.status(500).json());

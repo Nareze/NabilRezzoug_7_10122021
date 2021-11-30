@@ -11,6 +11,8 @@ exports.createMessage = (req, res, next) => {
   // const decodedCookie = jwt.verify(cookie, "JWT_SIGN_SECRET");
   // const userId = decodedCookie.userId;
 
+
+
   const token = req.headers.authorization.split(" ")[1];
   console.log("token:///////:", token)
   const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
@@ -18,22 +20,25 @@ exports.createMessage = (req, res, next) => {
 
 
 
+  // models.User.findOne({
+  //   attributes: ["id", "email", "username"],
+  //   where: { id: userId },
+  // })
 
-  models.User.findOne({
-    attributes: ["id", "email", "username"],
-    where: { id: userId },
-  })
+    // .then((user) => {
 
-    .then((user) => {
       
-        if (req.file !== undefined) {
+        if (req.file) {     // si une image est envoyé alors ...
           let imageUrl;
           imageUrl = `${req.protocol}://${req.get("host")}/images/${
             req.file.filename
           }`;
           models.Message.create({
+            contenu: req.body.contenu,
+            titre: req.body.titre,
             image: imageUrl,
-            UserId: user.id, // majuscules sensible à la casse
+            UserId:userId,
+            // UserId: user.id, // majuscules sensible à la casse
           })
             .then((message) => {
               res.status(201).json(message);
@@ -43,11 +48,12 @@ exports.createMessage = (req, res, next) => {
             });
         }
 
-        if (req.body.contenu !== undefined) {
+        if (!req.file) {
           models.Message.create({
             contenu: req.body.contenu,
             titre: req.body.titre,
-            UserId: user.id,
+            UserId:userId,
+            // UserId: user.id,
           })
             .then((message) => {
               res.status(201).json(message);
@@ -57,12 +63,12 @@ exports.createMessage = (req, res, next) => {
             });
         }
 
-        if (req.body.contenu == undefined && req.file == undefined) {
+        if (req.body.contenu == undefined && req.file == undefined && req.body.titre == undefined) {
           res.status(400).json({ error: "Empty message" });
         }
 
-    })
-    .catch((error) => res.status(500).json(error));
+    // })
+    // .catch((error) => res.status(500).json(error));
 };
 
 exports.getAllUsersMessages = (req, res, next) => {

@@ -1,7 +1,7 @@
 <template>
   <form v-on:submit.prevent="submitForm">
     <div class="container">
-      <h1>S'enregistrer</h1>
+      <h1>Inscription</h1>
       <p>Merci de remplir tous les champs pour s'inscrire</p>
       <hr />
 
@@ -56,6 +56,7 @@ export default {
 
   data() {
     return {
+      
       form: {
         email: "",
         username: "",
@@ -70,7 +71,9 @@ export default {
       axios
         .post("http://localhost:3000/api/user/signup", this.form)
         .then((response) => {
+          localStorage.setItem('token',response.data.token)
           console.log(response);
+          this.$router.push("/messageList");
         })
         .catch((error) => {
           console.log(error);
