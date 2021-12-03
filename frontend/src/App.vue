@@ -1,20 +1,25 @@
 <template>
+<div>
   <div id="nav">
-    <div class="logo"><img :src="logo" /></div>
+    <div class="logo"><router-link to="/login"><img :src="logo" /></router-link></div>
 
     <router-link to="/login">Connexion</router-link> |
 
-    <router-link to="/messagelist">Messages</router-link> |
+    <router-link to="/messagelist" >Messages</router-link> |
 
-    <router-link to="/signup">S'inscrire</router-link> |
+    <router-link to="/signup">Inscription</router-link> |
 
-    <router-link to="/myprofile">Mon compte</router-link>
+    <router-link to="/myprofile">Mon compte</router-link> |
+
+    <router-link to="/users">Utilisateurs</router-link> 
+
 
     <a href="#" v-on:click="logout()" class="logout">
       <span class="text"> Déconnexion </span><i class="fas fa-sign-out-alt"></i
     ></a>
   </div>
   <router-view />
+</div>
 </template>
 
 <script>
@@ -36,11 +41,18 @@ export default {
 </script>
 
 <style lang="scss">
+
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+
+*{
+  margin: 0px;
+  padding: 0px;
 }
 
 .logout {
@@ -53,7 +65,7 @@ export default {
   top: 0px;
   left: 5px;
   img {
-    height: 50px;
+    height: 40px;
     margin-top: 20px;
   }
 }
@@ -84,7 +96,7 @@ export default {
   .logout {
     position: inherit;
     text-align: center;
-    padding-left: 5px;
+    padding-left: 25px;
     .text {
       display: none;
     }

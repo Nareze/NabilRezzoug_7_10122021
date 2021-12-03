@@ -3,6 +3,7 @@ import MessageList from '../views/MessageList.vue'
 import SignUp from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Account from '../views/MyProfile.vue'
+import ListOfUsers from '../views/Users.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/myprofile',
     name: 'MyProfile',
     component: Account
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: ListOfUsers
   },
 
 

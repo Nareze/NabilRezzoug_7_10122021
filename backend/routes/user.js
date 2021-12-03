@@ -11,12 +11,10 @@ const checkInput = require('../middlewares/checkInput')
 
 router.post("/signup", /*checkInput.checkSignUp, checkInput.checkUsername, emailCtrl, passwordCtrl,*/ userCtrl.signup);
 router.post("/login", /*checkInput.checkLoginInput,*/ userCtrl.login);
-
 router.get("/profiles", /*auth,*/ userCtrl.profiles)    // voir tout les profils
 router.get("/profile", auth, userCtrl.profile)      // voir un profil
-
 router.put("/modify", /*passwordCtrl, checkInput.checkUsername,*/ userCtrl.modify) // modifier un profil
-router.delete("/delete",/* auth,*/ userCtrl.deleteProfile)  // supprimer un profil
+router.delete("/delete", /*auth,*/ userCtrl.deleteProfile)  // supprimer un profil
 
 router.get("/logout", auth, userCtrl.logout)
 

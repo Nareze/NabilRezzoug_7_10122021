@@ -18,15 +18,19 @@ exports.createMessage = (req, res, next) => {
   const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
   const userId = decodedToken.userId;
 
+  console.log("/////////", req.body.contenu )
 
 
   // models.User.findOne({
   //   attributes: ["id", "email", "username"],
   //   where: { id: userId },
   // })
+  // .then((user) => {
 
-    // .then((user) => {
-
+    if ((req.body.titre == "") || (req.body.contenu == "")) {
+          
+      res.status(400).json({ error: "Empty message" });
+    } else {
       
         if (req.file) {     // si une image est envoyé alors ...
           let imageUrl;
@@ -62,10 +66,9 @@ exports.createMessage = (req, res, next) => {
               res.status(500).json(err);
             });
         }
+      }
 
-        if (req.body.contenu == undefined && req.file == undefined && req.body.titre == undefined) {
-          res.status(400).json({ error: "Empty message" });
-        }
+
 
     // })
     // .catch((error) => res.status(500).json(error));
@@ -77,7 +80,7 @@ exports.getAllUsersMessages = (req, res, next) => {
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
-      console.log("messages/////////", messages);
+      // console.log("messages/////////", messages);
       if (messages != null) {
         res.status(200).json(messages);
       } else {
@@ -101,13 +104,13 @@ exports.getUserMessages = (req, res, next) => {
     attributes: ["id", "email", "username"],
     where: { id: userId },
   }).then((user) => {
-    console.log("contenu de user 1 ///////", JSON.stringify(user));
+    // console.log("contenu de user 1 ///////", JSON.stringify(user));
     models.Message.findAll({
       attributes: ["contenu", "titre", "image"],
       where: { UserId: user.id },
     })
       .then((message) => {
-        console.log("contenu de user 1 ///////", JSON.stringify(message));
+        // console.log("contenu de user 1 ///////", JSON.stringify(message));
         if (message) {
           res.status(200).json(message);
         } else {
@@ -130,9 +133,9 @@ exports.getOneUserMessage = (req, res, next) => {
         res.status(404).json({ error: "Rien à afficher" });
       } else {
         res.status(201).json(message);
-        console.log(
-          "contenu de message 2 //////// : " + JSON.stringify(message)
-        );
+        // console.log(
+        //   "contenu de message 2 //////// : " + JSON.stringify(message)
+        // );
       }
     })
     .catch(() => {
@@ -164,10 +167,10 @@ exports.removeMessage = (req, res, next) => {
         models.Message.findOne({
           where: { id: messageId },
         }).then((message) => {
-          console.log(
-            "contenu de message /////////",
-            JSON.stringify(message.UserId)
-          );
+          // console.log(
+          //   "contenu de message /////////",
+          //   JSON.stringify(message.UserId)
+          // );
           // L'utilisateur ne pourra supprimmer que les messages lui appartenant
           if (message.UserId == userId || user.isAdmin == true) {
             models.Message.destroy({
@@ -194,15 +197,12 @@ exports.modifyMessage = (req, res, next) => {
   const titre = req.body.newtitre;
   const contenu = req.body.newcontenu;
 
-  console.log("////////:", req.file)
 
 
   models.Message.findOne({
     where: {id: messageId}
   }).then((message) => {
-    console.log("////////:", message.image)
     if (message){
-      console.log(req.file)
       message.update({
         titre:titre,
         contenu: contenu,

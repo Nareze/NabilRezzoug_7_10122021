@@ -1,9 +1,8 @@
 <template>
-  <form v-on:submit.prevent="submitForm">
-    <div class="container">
-      <h1>Inscription</h1>
-      <p>Merci de remplir tous les champs pour s'inscrire</p>
-      <hr />
+<div>
+  <div class="container">
+    <form v-on:submit.prevent="submitForm">
+      <h2>Merci de remplir tous les champs pour s'inscrire</h2>
 
       <label for="email"><b>Adresse Mail</b></label>
       <input
@@ -41,22 +40,28 @@
         v-model="form.bio"
       />
 
-      <div>
+      <div class="submitForm">
         <button type="submit" class="signupbtn">Je m'inscris</button>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
+
+  <FooterItem/>
+  </div>
 </template>
 
 <script>
 import axios from "axios";
+import FooterItem from "../components/Footer.vue"
 
 export default {
   name: "SignUp",
+    components:{
+    FooterItem
+  },
 
   data() {
     return {
-      
       form: {
         email: "",
         username: "",
@@ -71,7 +76,7 @@ export default {
       axios
         .post("http://localhost:3000/api/user/signup", this.form)
         .then((response) => {
-          localStorage.setItem('token',response.data.token)
+          localStorage.setItem("token", response.data.token);
           console.log(response);
           this.$router.push("/messageList");
         })
@@ -83,64 +88,17 @@ export default {
 };
 </script>
 
-<style scoped>
-form {
-  text-align: center;
-  margin-top: 25px;
-  border: 3px solid #f1f1f1 !important;
+<style lang="scss">
+
+.submitForm{
+  margin-top: 35px;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-* {
-  box-sizing: border-box;
-}
 
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  display: inline-block;
-  border: none;
-  background: #f1f1f1;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-  outline: none;
-}
-
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
-
-button {
-  background-color: #182b4a !important;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
-
-button:hover {
-  opacity: 0.8;
-  background-color: #e62600 !important;
-  transition: 300ms;
-}
-
-.container {
-  padding: 0pc 15px 15px 15px;
-}
 
 @media screen and (max-width: 300px) {
-  .signupbtn {
-    width: 100%;
-  }
 }
+
+
+
 </style>

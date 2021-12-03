@@ -1,8 +1,6 @@
 <template>
-  <div class="center">
-    <div>
-      <h1>Mon compte</h1>
-    </div>
+<div>
+  <div class="container">
 
     <div>
       <h2>Mes Infos</h2>
@@ -14,7 +12,7 @@
     <div>
       <h2>Modifier mon compte</h2>
 
-      <div>
+      <div class="modifyAccount">
         <label for="email"><b>Changer mon mot de passe : </b></label>
         <input
           type="password"
@@ -32,26 +30,38 @@
         />
 
         <label for="bio"><b>Changer ma bio : </b></label>
-        <input  type="text" placeholder="Entrer votre bio" name="bio" v-model="bio" />
-        <br>
-        <button class="modifyButton" v-on:click="updateUser()">Submit</button>
+        <input
+          type="text"
+          placeholder="Entrer votre bio"
+          name="bio"
+          v-model="bio"
+        />
       </div>
+      <br />
+      <div class="modifyButton">
+        <button v-on:click="updateUser()">Envoyer</button>
+      </div>
+  </div>
 
+  <div class="delete">
+    <h2>Supprimer mon compte</h2>
+      <button v-on:click="deleteUser()">Supprimer</button>
     </div>
+  </div>
 
-    <div>
-        <h2>Supprimer mon compte</h2>
-        
-        <button v-on:click="deleteUser()">Supprimer</button>
 
-    </div>
+  <FooterItem/>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import FooterItem from "../components/Footer.vue"
 
 export default {
+    components:{
+    FooterItem
+  },
   data() {
     return {
       user: "",
@@ -63,24 +73,24 @@ export default {
 
   methods: {
     updateUser() {
-
       axios
-        .put("http://localhost:3000/api/user/modify",
-         {
-             password:this.password,
-             username:this.username,
-             bio:this.bio,
-         },
-         {
-          headers: {
-            Authorization: "Bearer " + localStorage.token,
+        .put(
+          "http://localhost:3000/api/user/modify",
+          {
+            password: this.password,
+            username: this.username,
+            bio: this.bio,
           },
-        }
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.token,
+            },
+          }
         )
         .then(function () {
           console.log("ENVOYÉ");
           window.location.reload();
-          alert("User updated")
+          alert("User updated");
         })
         .catch(function () {
           console.log("ECHEC");
@@ -88,15 +98,13 @@ export default {
     },
 
     deleteUser() {
-        
-        axios.delete("http://localhost:3000/api/user/delete",
-               {
-                    headers: { Authorization: "Bearer " + localStorage.token },
-               })
-                    .then((response) => console.log(response), window.location.reload(), alert("Account deleted"))
-                    .catch((err) => console.log(err));
-    }
-
+      axios
+        .delete("http://localhost:3000/api/user/delete", {
+          headers: { Authorization: "Bearer " + localStorage.token },
+        })
+        .then((response) => console.log(response),window.location.reload(), alert("Account deleted"))
+        .catch((err) => console.log(err));
+    },
   },
 
   created() {
@@ -109,20 +117,7 @@ export default {
 };
 </script>
 
-<style scoped>
-
-.modifyButton{
-    margin-top: 25px;
-}
-
-.center {
-  text-align: center;
-}
-
-h2 {
-  color: grey;
-  border-top: 3px solid #f1f1f1;
-  border-bottom: 3px solid #f1f1f1;
-  margin-top: 55px;
+<style lang="scss">
+@media screen and (max-width: 500px) {
 }
 </style>

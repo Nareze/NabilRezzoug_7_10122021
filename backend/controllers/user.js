@@ -146,15 +146,16 @@ exports.deleteProfile = (req, res, next) => {
   models.User.findOne({
     where: { id: userId }
   }).then((user) => {
-    if (user.id == userId || user.isAdmin == true) {
+    console.log("//////", user.id)
+    // if (user.id || user.isAdmin == true) {
       models.User.destroy({
         where: { id: user.id}
       })
       .then(() => res.status(200).json({ message: "User deleted"}))
       .catch(() => res.status(500).json({ message: "Not allowed to delete other users"}));
-    } else {
-      res.status(405).json({ message: "Not allowed to delete"})
-    }
+    // } else {
+    //   res.status(405).json({ message: "Not allowed to delete"})
+    // }
   }).catch(() => res.status(500).json({ message: "Not allowed to delete"}));
 
 };

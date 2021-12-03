@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     titre: DataTypes.STRING,
     image: DataTypes.STRING,
     contenu: DataTypes.STRING,
-    isLike: DataTypes.BOOLEAN
+    isLike: DataTypes.BOOLEAN,
+    onDelete: 'cascade'         // ajouter on delete cascade pour supprimer l'user puis ses messages rattachés (foreign key)
   }, {
     sequelize,
     modelName: 'Message',
