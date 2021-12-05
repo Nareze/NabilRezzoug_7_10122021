@@ -13,18 +13,21 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.Message.belongsTo(models.User, {
         foreignKey: {
-          allowNull: false
+          allowNull: false,
+          foreignKey: "UserId",         // ajouter la foreign key
+          onDelete: 'cascade',
+          hooks: true,
         }
       });
     }
   };
   Message.init({
-    // idUsers: DataTypes.INTEGER,
+    UserId: DataTypes.INTEGER,        // ajouter la foreign key
     titre: DataTypes.STRING,
     image: DataTypes.STRING,
     contenu: DataTypes.STRING,
     isLike: DataTypes.BOOLEAN,
-    onDelete: 'cascade'         // ajouter on delete cascade pour supprimer l'user puis ses messages rattachés (foreign key)
+    // onDelete: 'cascade'
   }, {
     sequelize,
     modelName: 'Message',

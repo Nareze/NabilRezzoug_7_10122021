@@ -12,21 +12,17 @@ exports.createMessage = (req, res, next) => {
   // const userId = decodedCookie.userId;
 
 
-
   const token = req.headers.authorization.split(" ")[1];
   console.log("token:///////:", token)
   const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
   const userId = decodedToken.userId;
 
-  console.log("/////////", req.body.contenu )
 
-
-  // models.User.findOne({
-  //   attributes: ["id", "email", "username"],
-  //   where: { id: userId },
-  // })
-  // .then((user) => {
-
+  models.User.findOne({
+    attributes: ["id", "email", "username"],
+    where: { id: userId },
+  })
+  .then((user) => {
     if ((req.body.titre == "") || (req.body.contenu == "")) {
           
       res.status(400).json({ error: "Empty message" });
@@ -38,26 +34,26 @@ exports.createMessage = (req, res, next) => {
             req.file.filename
           }`;
           models.Message.create({
+            UserId: user.id, // majuscules sensible à la casse
             contenu: req.body.contenu,
             titre: req.body.titre,
             image: imageUrl,
-            UserId:userId,
-            // UserId: user.id, // majuscules sensible à la casse
           })
-            .then((message) => {
-              res.status(201).json(message);
-            })
-            .catch((err) => {
-              res.status(500).json(err);
-            });
+          
+          .then((message) => {
+            res.status(201).json(message)
+          })
+          .catch((err) => {
+            res.status(500).json(err);
+          });
+      
         }
 
         if (!req.file) {
           models.Message.create({
+            UserId: user.id,
             contenu: req.body.contenu,
             titre: req.body.titre,
-            UserId:userId,
-            // UserId: user.id,
           })
             .then((message) => {
               res.status(201).json(message);
@@ -70,13 +66,13 @@ exports.createMessage = (req, res, next) => {
 
 
 
-    // })
-    // .catch((error) => res.status(500).json(error));
+    })
+    .catch((error) => res.status(500).json(error));
 };
 
 exports.getAllUsersMessages = (req, res, next) => {
   models.Message.findAll({
-    attributes: ["createdAt", "titre", "contenu", "image"],
+    attributes: ["createdAt", "titre", "contenu", "image", "UserId", "id"],
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
@@ -144,7 +140,7 @@ exports.getOneUserMessage = (req, res, next) => {
 };
 
 exports.removeMessage = (req, res, next) => {
-  const messageId = req.body.messageId;
+  const messageId = req.params.messageId;
 
   // const cookie = req.cookies.access_token;
   // const decodedCookie = jwt.verify(cookie, "JWT_SIGN_SECRET");
@@ -167,14 +163,11 @@ exports.removeMessage = (req, res, next) => {
         models.Message.findOne({
           where: { id: messageId },
         }).then((message) => {
-          // console.log(
-          //   "contenu de message /////////",
-          //   JSON.stringify(message.UserId)
-          // );
+          console.log("/////////" + (JSON.stringify(message)))
           // L'utilisateur ne pourra supprimmer que les messages lui appartenant
           if (message.UserId == userId || user.isAdmin == true) {
             models.Message.destroy({
-              where: { id: message.id },
+              where: { id: messageId },
             })
               .then(() => res.status(201).json("Message deleted"))
               .catch((err) => res.status(500).json(err));
@@ -196,8 +189,6 @@ exports.modifyMessage = (req, res, next) => {
   const messageId = req.params.id;
   const titre = req.body.newtitre;
   const contenu = req.body.newcontenu;
-
-
 
   models.Message.findOne({
     where: {id: messageId}

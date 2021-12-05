@@ -12,35 +12,35 @@
     <div>
       <h2>Modifier mon compte</h2>
 
-      <div class="modifyAccount">
-        <label for="email"><b>Changer mon mot de passe : </b></label>
-        <input
-          type="password"
-          placeholder="Entrer votre nouveau mot de passe"
-          name="password"
-          v-model="password"
-        />
+          <div class="modifyAccount">
+      <label for="email"><b>Changer mon mot de passe : </b></label>
+      <input
+        type="password"
+        placeholder="Entrer votre nouveau mot de passe"
+        name="password"
+        v-model="password"
+      />
+      <label for="pseudo"><b>Changer mon pseudo : </b></label>
+      <input
+        type="text"
+        placeholder="Entrer votre nouveau pseudo"
+        name="pseudo"
+        v-model="username"
+      />
+      <label for="bio"><b>Changer ma bio : </b></label>
+      <input
+        type="text"
+        placeholder="Entrer votre bio"
+        name="bio"
+        v-model="bio"
+      />
+    </div>
 
-        <label for="pseudo"><b>Changer mon pseudo : </b></label>
-        <input
-          type="text"
-          placeholder="Entrer votre nouveau pseudo"
-          name="pseudo"
-          v-model="username"
-        />
-
-        <label for="bio"><b>Changer ma bio : </b></label>
-        <input
-          type="text"
-          placeholder="Entrer votre bio"
-          name="bio"
-          v-model="bio"
-        />
-      </div>
       <br />
-      <div class="modifyButton">
+      <div>
         <button v-on:click="updateUser()">Envoyer</button>
       </div>
+
   </div>
 
   <div class="delete">
@@ -60,7 +60,7 @@ import FooterItem from "../components/Footer.vue"
 
 export default {
     components:{
-    FooterItem
+    FooterItem,
   },
   data() {
     return {
@@ -68,10 +68,13 @@ export default {
       password: "",
       username: "",
       bio: "",
+
     };
   },
 
   methods: {
+
+
     updateUser() {
       axios
         .put(
@@ -96,6 +99,7 @@ export default {
           console.log("ECHEC");
         });
     },
+
 
     deleteUser() {
       axios

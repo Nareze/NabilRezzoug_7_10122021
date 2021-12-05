@@ -122,10 +122,9 @@ exports.profile = (req, res, next) => {
   .catch(() => res.status(500).json());
 };
 
-
 exports.profiles = (req, res, next) => {
   models.User.findAll({
-    attributes: ["username", "bio", "image", "createdAt"],
+    attributes: ["username", "bio", "image", "createdAt", "id"],
   })
     .then((user) => {
       if (user != null) {

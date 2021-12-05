@@ -4,6 +4,7 @@ import SignUp from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Account from '../views/MyProfile.vue'
 import ListOfUsers from '../views/Users.vue'
+import ModifyMessage from '../views/ModifyMessage.vue'
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     name: 'Users',
     component: ListOfUsers
   },
+  {
+    path: "/ModifyMessage/:messageId",    // l'id du message est passé dans l'url
+    component: ModifyMessage,
+    props:true
+  }
 
 
 ]

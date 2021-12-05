@@ -1,4 +1,5 @@
 <template>
+ <div>
   <div class="container">
     <h2>Liste des utilisateurs</h2>
 
@@ -7,13 +8,13 @@
         <li>{{ user.username }}</li>
         <li>{{ user.bio }}</li>
         <li>{{ user.createdAt }}</li>
-        
       </ul>
     </div>
   </div>
 
 
-  <FooterItem/>
+  <FooterItem></FooterItem>
+ </div>
 </template>
 
 <script>
@@ -33,10 +34,17 @@ export default {
   },
 
   created() {
-    axios.get(`http://localhost:3000/api/user/profiles`).then((response) => {
+      axios
+        .get(`http://localhost:3000/api/user/profiles`, {
+          headers: { Authorization: "Bearer " + localStorage.token },
+        })
+        .then((response) => {
       this.users = response.data;
       console.log(response.data);
-    });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   },
 };
 </script>

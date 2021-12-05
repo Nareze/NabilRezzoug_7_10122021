@@ -2,8 +2,8 @@
 <div>
   <div class="container">
 
-
   <form class="sendMessage">
+   
       <h3>Envoyer un message</h3>
       <hr>
 
@@ -30,24 +30,43 @@
       <hr>
 
 
-      <ul>
-        <li v-for="message of messages" :key="message" class="boxListMessage">
-          <p>
-            <strong class="messageTitre"> {{ message.titre }}</strong>
-          </p>
 
-           <hr class="hrTitleMessage">
-          <p>
-            <span class="messageContenu"> {{ message.contenu }}</span>
-          </p>
+       <div v-for="message of messages" :key="message" class="boxListMessage">   <!--  Récupération des messages  -->
+
+          <div v-for="user of users" :key="user">      <!--  Récupération des utilisateurs  -->
+
+
+            <div v-if="message.UserId === user.id">
+              
+            <span class="pseudo"><strong>Pseudo : {{user.username}}</strong></span>
+            </div>
+
+          </div>
+
+          <div>
+            <p class="messageTitre"> <strong>{{ message.titre }}</strong></p>
+            <p class="messageContenu">{{ message.contenu }}</p>
+            <p class="messageDate">{{ message.createdAt }}</p>
+          </div>
+
+          <hr class="changeMessage">
+
           <div v-if="message.image" class="picdiv">
             <img class="images" v-bind:src="message.image" alt="" />
           </div>
-          <a href="#" v-on:click="deleteMessage()"
-            ><i class="fas fa-trash-alt"></i
-          ></a>
-        </li>
-      </ul>
+
+        <button class="modifyButton" v-on:click="modifyMessage(message.id)" >Modifier
+        </button>
+
+        <a href=""></a>
+
+
+          <a href="#" v-on:click="deleteMessage(message.id)">
+            <i class="fas fa-trash-alt"></i>
+          </a>
+
+      </div>
+
     </div>
   </div>
   <FooterItem/>
@@ -68,7 +87,8 @@ export default {
       file: "",
       titre: "",
       contenu: "",
-      messages: [],
+      messages: "",
+      users:"",
       errors: [],
     };
   },
@@ -101,22 +121,36 @@ export default {
         });
     },
 
-    deleteMessage() {
+    deleteMessage(messageId) {
       axios
-        .delete("http://localhost:3000/api/message/remove", {
+        .delete(`http://localhost:3000/api/message/${messageId}`, {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
         .then((response) => console.log(response))
         .catch((err) => console.log(err));
     },
+
+
+      modifyMessage(messageId) {
+      this.$router.push(`/ModifyMessage/${messageId}`)    // On passe l'argument dans l'url en utilisant l'interpolation
+    },
   },
 
-  created() {
+
+  mounted() {
     axios.get(`http://localhost:3000/api/message/users`).then((response) => {
       this.messages = response.data;
+      console.log(JSON.stringify(response));
+    });
+    axios.get(`http://localhost:3000/api/user/profiles`).then((response) => {
+      this.users = response.data;
       console.log(response.data);
     });
   },
+
+
+
+
 };
 </script>
 
@@ -127,11 +161,17 @@ export default {
   text-align: center;
 }
 
+li{
+  list-style-type: none;
+}
+
 
 /* POST MESSAGE */ ////////////////////////////
 
 
-
+.messagesList{
+  margin-top: 100px;
+}
 
 
 h3{  
@@ -155,9 +195,11 @@ hr {
 
 
 .sendMessage{
-  padding-bottom: 50px;
+  margin-top: 50px;
   margin-right: 20%;
   margin-left: 20%;
+  border: 3px solid #d4d4d4;
+  border-radius: 7px;
 }
 
 
@@ -211,18 +253,12 @@ button:hover {
 /* LISTE MESSAGES */ //////////////////////////////////
 
 
-ul{
-  margin-top: 50px;
-}
-li {
-  list-style-type: none;
-}
 
-li:nth-child(odd) {
+.boxListMessage:nth-child(odd) {
   background: #eef1f5;
 }
 
-li:nth-child(even) {
+.boxListMessage:nth-child(even) {
   background: aliceblue;
 }
 
@@ -269,13 +305,45 @@ a{
   text-decoration: none;
 }
 
+.modifyButton{
+  width: 100px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 2px;
+  margin: 0;
+  border-radius: 3px;
+}
 
+.messageDate{
+  position: absolute;
+  left: 10px;
+  bottom: 50px;
+}
+
+.changeMessage{
+  margin-bottom: 35px;
+}
+
+.pseudo{
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+.messageTitre{
+  position: relative;
+  bottom: 10px;
+}
 
 
 
 @media screen and (max-width: 500px) {
   .images{
     width: 100px;
+  }
+  .sendMessage{
+    border: none;
   }
 }
 </style>

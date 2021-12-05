@@ -10,9 +10,9 @@ router.post("/create", auth, multer, messageCtrl.createMessage);
 
 router.get("/users", /*auth,*/ messageCtrl.getAllUsersMessages);  // voir tout les messages
 router.get("/", messageCtrl.getOneUserMessage);     // voir un message de l'utilisateur
-router.delete("/remove", /*auth,*/ messageCtrl.removeMessage);
+router.delete("/:messageId", /*auth,*/ messageCtrl.removeMessage);
 router.get("/user", messageCtrl.getUserMessages);      // voir tout les messages d'un utlisateur
-router.put("/modify/:id", multer, messageCtrl.modifyMessage);
+router.put("/:id", multer, messageCtrl.modifyMessage);
 
 
 module.exports = router;

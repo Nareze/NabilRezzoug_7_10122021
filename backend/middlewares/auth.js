@@ -2,6 +2,22 @@ const jwt = require("jsonwebtoken");
 const JWT_SIGN_SECRET = "mdpsecret";
 
 module.exports = (req, res, next) => {
+
+
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+
+    if (decodedToken) {
+      next();
+    }
+  } catch {
+    res.status(403).json("Cannot verify token");
+  }
+
+
+
+
   // try {
   //   const token = req.headers.authorization.split(" ")[1];
   //   const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
@@ -18,16 +34,6 @@ module.exports = (req, res, next) => {
   //   });
   // }
 
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
-
-    if (decodedToken) {
-      next();
-    }
-  } catch {
-    res.status(403).json("Cannot verify token");
-  }
 
 
     // const token = req.cookies.access_token;
