@@ -2,15 +2,16 @@
 <div>
   <div class="container">
 
-    <div>
+    <div class="MyInfos">
       <h2>Mes Infos</h2>
       <p><strong>Mon Pseudo :</strong> {{ user.username }}</p>
       <p><strong>Ma bio :</strong> {{ user.bio }}</p>
       <p><strong>Ma date d'inscription :</strong> {{ user.createdAt }}</p>
     </div>
 
-    <div>
+    <div class="modifyAccount">
       <h2>Modifier mon compte</h2>
+      <p> <strong>(Veulliez remplir tous les champs) </strong> </p>
 
           <div class="modifyAccount">
       <label for="email"><b>Changer mon mot de passe : </b></label>
@@ -122,6 +123,16 @@ export default {
 </script>
 
 <style lang="scss">
+.MyInfos{
+  margin-top: 75px;
+}
+.delete{
+  margin-top: 100px;
+}
+.modifyAccount{
+  margin-top: 75px;
+}
+
 @media screen and (max-width: 500px) {
 }
 </style>

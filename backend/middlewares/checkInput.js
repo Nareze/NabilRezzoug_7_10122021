@@ -11,10 +11,10 @@ exports.checkSignUp = (req, res, next) => {
 }
 
 exports.checkUsername = (req, res, next) => {
-  if (req.body.username.length >= 13 || req.body.username.length <= 4) {
+  if (req.body.username.length >= 13 || req.body.username.length <= 2) {
     return res
       .status(400)
-      .json({ error: "wrong username (must have 5-12 characters)" });
+      .json({ error: "wrong username (must have 3-12 characters)" });
   } else {
       next()
   }

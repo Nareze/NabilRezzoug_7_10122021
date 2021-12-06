@@ -1,20 +1,12 @@
 const models = require("../models");
 const jwt = require("jsonwebtoken");
-const JWT_SIGN_SECRET = "mdpsecret";
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.createMessage = (req, res, next) => {
-  // let headerAuth = req.headers['authorization'];
-  // let userId = jwtUtils.getUserId(headerAuth);
-  // console.log= userId;
-
-  // const cookie = req.cookies.access_token;
-  // const decodedCookie = jwt.verify(cookie, "JWT_SIGN_SECRET");
-  // const userId = decodedCookie.userId;
-
-
   const token = req.headers.authorization.split(" ")[1];
   console.log("token:///////:", token)
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
 
 
@@ -64,8 +56,6 @@ exports.createMessage = (req, res, next) => {
         }
       }
 
-
-
     })
     .catch((error) => res.status(500).json(error));
 };
@@ -76,7 +66,6 @@ exports.getAllUsersMessages = (req, res, next) => {
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
-      // console.log("messages/////////", messages);
       if (messages != null) {
         res.status(200).json(messages);
       } else {
@@ -92,7 +81,7 @@ exports.getUserMessages = (req, res, next) => {
   // const userId = decodedCookie.userId;
 
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
 
 
@@ -100,13 +89,11 @@ exports.getUserMessages = (req, res, next) => {
     attributes: ["id", "email", "username"],
     where: { id: userId },
   }).then((user) => {
-    // console.log("contenu de user 1 ///////", JSON.stringify(user));
     models.Message.findAll({
       attributes: ["contenu", "titre", "image"],
       where: { UserId: user.id },
     })
       .then((message) => {
-        // console.log("contenu de user 1 ///////", JSON.stringify(message));
         if (message) {
           res.status(200).json(message);
         } else {
@@ -129,9 +116,6 @@ exports.getOneUserMessage = (req, res, next) => {
         res.status(404).json({ error: "Rien à afficher" });
       } else {
         res.status(201).json(message);
-        // console.log(
-        //   "contenu de message 2 //////// : " + JSON.stringify(message)
-        // );
       }
     })
     .catch(() => {
@@ -142,15 +126,11 @@ exports.getOneUserMessage = (req, res, next) => {
 exports.removeMessage = (req, res, next) => {
   const messageId = req.params.messageId;
 
-  // const cookie = req.cookies.access_token;
-  // const decodedCookie = jwt.verify(cookie, "JWT_SIGN_SECRET");
-  // const userId = decodedCookie.userId;
-
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
 
-
+  
   // On cherche le propriétaire du message
   models.User.findOne({
     attributes: ["id", "email", "username", "isAdmin"],

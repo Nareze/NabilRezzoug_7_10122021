@@ -2,11 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const models = require("../models");
 const cryptoJS = require("crypto-js");
-const emailtoCrypt = "mypassword";
-const JWT_SIGN_SECRET = "mdpsecret";
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.signup = (req, res, next) => {
-  const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
+  const emailCrypted = cryptoJS.SHA256(req.body.email, process.env.EMAIL_SECRET).toString();
 
   models.User.findOne({
     where: { username: req.body.username },
@@ -36,9 +36,9 @@ exports.signup = (req, res, next) => {
                 username:user.username,
                 token :jwt.sign(
                   { userId: user.id, isAdmin: user.isAdmin },
-                  JWT_SIGN_SECRET,
+                  process.env.JWT_SECRET,
                   {
-                    expiresIn: "1h",
+                    expiresIn: process.env.JWT_EXPIRATION,
                   }
                   ),
                   })
@@ -51,7 +51,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-  const emailCrypted = cryptoJS.SHA256(req.body.email, emailtoCrypt).toString();
+  const emailCrypted = cryptoJS.SHA256(req.body.email, process.env.EMAIL_SECRET).toString();
 
   models.User.findOne({
     where: { email: emailCrypted },
@@ -72,21 +72,18 @@ exports.login = (req, res, next) => {
               userId: user.id,
               token :jwt.sign(
                 { userId: user.id, isAdmin: user.isAdmin },
-                JWT_SIGN_SECRET,
+                process.env.JWT_SECRET,
                 {
-                  expiresIn: "1h",
+                  expiresIn: process.env.JWT_EXPIRATION,
                 }
               ),
             });
-
             //   const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, "JWT_SIGN_SECRET", { expiresIn: "1h"});
             //   return res.cookie("access_token", token, {
             //       httpOnly: true,
             //       maxAge: 900000,
             //       // secure: process.env.NODE_ENV === "production",
             //     }).status(200).json({ Response : "User n°" +  user.id + " Logged in successfully" });
-
-            
           }
 
 
@@ -98,14 +95,9 @@ exports.login = (req, res, next) => {
 };
 
 exports.profile = (req, res, next) => {
-  // let headerAuth = req.headers['authorization'];
-  // let userId = jwtUtils.getUserId(headerAuth);
-
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
-
-  // userId = req.params.id;
 
   models.User.findOne({
     attributes: ["id", "username", "bio", "createdAt"],
@@ -139,41 +131,33 @@ exports.profiles = (req, res, next) => {
 exports.deleteProfile = (req, res, next) => {
 
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
 
   models.User.findOne({
     where: { id: userId }
   }).then((user) => {
-    console.log("//////", user.id)
-    // if (user.id || user.isAdmin == true) {
       models.User.destroy({
         where: { id: user.id}
       })
       .then(() => res.status(200).json({ message: "User deleted"}))
       .catch(() => res.status(500).json({ message: "Not allowed to delete other users"}));
-    // } else {
-    //   res.status(405).json({ message: "Not allowed to delete"})
-    // }
   }).catch(() => res.status(500).json({ message: "Not allowed to delete"}));
 
 };
 
+
 exports.modify = (req, res, next) => {
-
   const token = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.verify(token, JWT_SIGN_SECRET);
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
-
   const newPassword = req.body.password;
   const newUsername = req.body.username;
   const newBio = req.body.bio;
-
     models.User.findOne({
       where: { id: userId },
     })
     .then((user) => {
-
       if ((newPassword!=="") )  {
       bcrypt
         .hash(newPassword, 10)
@@ -183,22 +167,17 @@ exports.modify = (req, res, next) => {
           .then(() => {
             return res.status(201).json({ message: "Changes updated" });
           });
-      } if((newUsername!=="")){
-
+      } else if((newUsername!=="")){
         models.User.update({ username : newUsername }, { where: { id: user.id } })
         .then(() => {
           return res.status(201).json({ message: "Changes updated" });
         });
-
-      } if((newBio!=="")) {
-
+      } else if((newBio!=="")) {
         models.User.update({ bio: newBio }, { where: { id: user.id } })
         .then(() => {
           return res.status(201).json({ message: "Changes updated" });
         });
-
       }
-
       }).catch(() => res.status(500).json());
 };
 

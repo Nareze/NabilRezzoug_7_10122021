@@ -88,32 +88,6 @@ export default {
     },
   },
 
-  //   methods: {
-      
-  //   submitForm() {
-  //     const store = useStore();
-  //     try {
-  //     axios
-  //       .post("http://localhost:3000/api/user/signup", this.form)
-  //       .then((response) => {
-  //         localStorage.setItem("token", response.data.token);
-  //         // this.$router.push("/messageList");
-  //         store.dispatch('setAuth', true)
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-
-         
-  //     } catch (e) {
-  //       store.dispatch('setAuth', false)
-  //     }
-  //   },
-  // },
-
-
-
-
 };
 </script>
 

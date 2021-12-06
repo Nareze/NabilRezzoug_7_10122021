@@ -1,86 +1,78 @@
 <template>
-<div>
-  <div class="container">
+  <div>
+    <div class="container">
+      <form class="sendMessage">
+        <h3>Envoyer un message</h3>
+        <hr />
+        <label for="Titre"><b>Titre:</b></label>
+        <input type="text" name="titre" v-model="titre" />
 
-  <form class="sendMessage">
-   
-      <h3>Envoyer un message</h3>
-      <hr>
+        <label for="Contenu"><b>Message: </b></label>
+        <textarea type="text" name="contenu" v-model="contenu" />
 
-          <label for="Titre"><b>Titre:</b></label>
-          <input type="text" name="titre" v-model="titre" />
+        <br />
+        <label for="Image"><b>Image: </b></label>
+        <input type="file" name="image" @change="handleFileUpload($event)" />
+        <button v-on:click="submitFile()">Envoyer</button>
+      </form>
 
-          <label for="Contenu"><b>Message: </b></label>
-          <textarea type="text" name="contenu" v-model="contenu" />
-          
-          <br>
-          <label for="Image"><b>Image: </b></label>
-          <input
-            type="file"
-            name="image"
-            @change="handleFileUpload($event)"
-          />
-          <button v-on:click="submitFile()">Envoyer</button>
-  </form>
+      <div class="messagesList">
+        <h3>Mur des messages</h3>
+        <hr class="wall">
 
+        <div v-for="message of messages" :key="message" class="boxListMessage">
+          <!--  Récupération des messages  -->
 
-
-    <div class="messagesList">
-      <h3> Mur des messages</h3>
-      <hr>
-
-
-
-       <div v-for="message of messages" :key="message" class="boxListMessage">   <!--  Récupération des messages  -->
-
-          <div v-for="user of users" :key="user">      <!--  Récupération des utilisateurs  -->
-
+          <div v-for="user of users" :key="user">
+            <!--  Récupération des utilisateurs  -->
 
             <div v-if="message.UserId === user.id">
-              
-            <span class="pseudo"><strong>Pseudo : {{user.username}}</strong></span>
+              <span class="pseudo"
+                ><strong>Pseudo : {{ user.username }}</strong></span
+              >
             </div>
-
           </div>
 
           <div>
-            <p class="messageTitre"> <strong>{{ message.titre }}</strong></p>
+            <p class="messageTitre">
+              <strong>{{ message.titre }}</strong>
+            </p>
             <p class="messageContenu">{{ message.contenu }}</p>
             <p class="messageDate">{{ message.createdAt }}</p>
           </div>
 
-          <hr class="changeMessage">
+          <hr class="changeMessage" />
 
           <div v-if="message.image" class="picdiv">
             <img class="images" v-bind:src="message.image" alt="" />
           </div>
-
-        <button class="modifyButton" v-on:click="modifyMessage(message.id)" >Modifier
-        </button>
-
-        <a href=""></a>
-
+<div class="lowerPartMessage">
+          <a v-on:click="modifyMessage(message.id)" class="updateIcon">
+            <i class="fas fa-edit"></i>
+          </a>
 
           <a href="#" v-on:click="deleteMessage(message.id)">
             <i class="fas fa-trash-alt"></i>
           </a>
 
-      </div>
+        </div>
 
+
+        </div>
+      </div>
     </div>
+    <FooterItem />
   </div>
-  <FooterItem/>
-</div>
 </template>
 
 <script>
 import axios from "axios";
-import FooterItem from "../components/Footer.vue"
+import FooterItem from "../components/Footer.vue";
 
 export default {
   name: "MessageList",
-  components:{
-    FooterItem
+  components: {
+    FooterItem,
   },
   data() {
     return {
@@ -88,7 +80,7 @@ export default {
       titre: "",
       contenu: "",
       messages: "",
-      users:"",
+      users: "",
       errors: [],
     };
   },
@@ -114,7 +106,6 @@ export default {
         })
         .then(function () {
           console.log("ENVOYÉ");
-          window.location.reload();
         })
         .catch(function () {
           console.log("ECHEC");
@@ -126,59 +117,67 @@ export default {
         .delete(`http://localhost:3000/api/message/${messageId}`, {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
-        .then((response) => console.log(response))
-        .catch((err) => console.log(err));
+        .then((response) => {
+          console.log(response), this.$router.push("/messageList");
+        })
+        .catch((err) => {
+          console.log(err),
+            alert(
+              "Vous ne pouvez pas supprimer les messages d'autres utilisateurs !"
+            ),
+            this.$router.push("/messageList");
+        });
     },
 
-
-      modifyMessage(messageId) {
-      this.$router.push(`/ModifyMessage/${messageId}`)    // On passe l'argument dans l'url en utilisant l'interpolation
+    modifyMessage(messageId) {
+      this.$router.push(`/ModifyMessage/${messageId}`); // On passe l'argument dans l'url en utilisant l'interpolation
     },
   },
-
 
   mounted() {
-    axios.get(`http://localhost:3000/api/message/users`).then((response) => {
-      this.messages = response.data;
-      console.log(JSON.stringify(response));
-    });
-    axios.get(`http://localhost:3000/api/user/profiles`).then((response) => {
-      this.users = response.data;
-      console.log(response.data);
-    });
+    axios
+      .get("http://localhost:3000/api/message/users", {
+        headers: { Authorization: "Bearer " + localStorage.token },
+      })
+      .then((response) => (this.messages = response.data));
+
+    axios
+      .get("http://localhost:3000/api/user/profiles", {
+        headers: { Authorization: "Bearer " + localStorage.token },
+      })
+      .then((response) => (this.users = response.data));
   },
-
-
-
-
 };
 </script>
 
 <style lang="scss">
-
-
-.container{
+.container {
   text-align: center;
 }
 
-li{
+li {
   list-style-type: none;
 }
 
-
 /* POST MESSAGE */ ////////////////////////////
 
-
-.messagesList{
-  margin-top: 100px;
+.lowerPartMessage{
+  padding-bottom: 75px;
 }
 
 
-h3{  
+.messagesList {
+  margin-top: 100px;
+}
+
+a {
+  cursor: pointer;
+}
+
+h3 {
   margin-top: 25px;
   margin-bottom: 40px;
   color: grey;
-
 }
 h2 {
   margin-top: 25px;
@@ -193,23 +192,19 @@ hr {
   border: 3px solid #d4d4d4;
 }
 
-
-.sendMessage{
+.sendMessage {
   margin-top: 50px;
-  margin-right: 20%;
-  margin-left: 20%;
+  margin-right: 10%;
+  margin-left: 10%;
   border: 3px solid #d4d4d4;
   border-radius: 7px;
 }
 
-
-  label {
+label {
   margin: 15px;
-  }
+}
 
-
-
-textarea{
+textarea {
   width: 100%;
   padding: 10px;
   display: inline-block;
@@ -252,8 +247,9 @@ button:hover {
 
 /* LISTE MESSAGES */ //////////////////////////////////
 
-
-
+.wall{
+  margin-bottom: 55px;
+}
 .boxListMessage:nth-child(odd) {
   background: #eef1f5;
 }
@@ -266,84 +262,78 @@ button:hover {
   margin: 25px;
 }
 
-
-
-
 .fa-trash-alt {
   position: absolute;
   right: 25px;
   bottom: 10px;
 }
 
-.boxPostMessage {
-  border: 3px solid #f1f1f1;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-right: 25%;
-  margin-left: 25%;
+.updateIcon {
+  position: absolute;
+  left: 25px;
+  bottom: 10px;
 }
 
 .boxListMessage {
   position: relative;
   text-align: center;
-  margin: 25px;
   box-shadow: 0px 1px 4px grey;
   background-color: #edf1f5;
   border-radius: 5px;
   padding: 20px;
+  margin-bottom: 40px;
 }
 
 .images {
   width: 200px;
 }
 
-.container{
+.container {
   margin-bottom: 100px;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-.modifyButton{
-  width: 100px;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  padding: 2px;
-  margin: 0;
-  border-radius: 3px;
-}
-
-.messageDate{
+.messageDate {
   position: absolute;
   left: 10px;
   bottom: 50px;
 }
 
-.changeMessage{
+.changeMessage {
   margin-bottom: 35px;
 }
 
-.pseudo{
+.pseudo {
   position: absolute;
   left: 10px;
   top: 10px;
 }
 
-.messageTitre{
+.messageTitre {
   position: relative;
   bottom: 10px;
 }
 
-
-
 @media screen and (max-width: 500px) {
-  .images{
+  .images {
     width: 100px;
   }
-  .sendMessage{
+  .sendMessage {
     border: none;
   }
+  .messageTitre {
+  position: relative;
+  bottom: -12px;
 }
+
+}
+
+
+
+
+
+
 </style>

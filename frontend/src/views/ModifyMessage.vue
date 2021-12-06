@@ -56,12 +56,10 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then(function (result) {
-          console.log(result);
-        })
-        .catch(function () {
-          console.log("ECHEC");
-        });
+          .then((response) => {
+          console.log(response), this.$router.push("/messageList");
+          })
+        .catch((err) => {console.log(err), alert("Vous ne pouvez pas supprimer les messages d'autres utilisateurs !"), this.$router.push("/messageList")});
     }
     }
 }

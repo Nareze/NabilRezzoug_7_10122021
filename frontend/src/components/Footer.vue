@@ -22,15 +22,6 @@
         ><i class="fab fa-twitter"></i
       ></a>
 
-      <!-- Google -->
-      <a
-        class="btn btn-primary btn-floating m-1"
-        style="background-color: #dd4b39;"
-        href="https://www.google.fr/"
-        role="button"
-        ><i class="fab fa-google"></i
-      ></a>
-
       <!-- Instagram -->
       <a
         class="btn btn-primary btn-floating m-1"
