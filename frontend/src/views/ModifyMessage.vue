@@ -57,6 +57,7 @@ export default {
           },
         })
           .then((response) => {
+          alert("Message modifié")
           console.log(response), this.$router.push("/messageList");
           })
         .catch((err) => {console.log(err), alert("Vous ne pouvez pas supprimer les messages d'autres utilisateurs !"), this.$router.push("/messageList")});

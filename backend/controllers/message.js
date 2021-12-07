@@ -19,7 +19,7 @@ exports.createMessage = (req, res, next) => {
           
       res.status(400).json({ error: "Empty message" });
     } else {
-      
+
         if (req.file) {     // si une image est envoyé alors ...
           let imageUrl;
           imageUrl = `${req.protocol}://${req.get("host")}/images/${

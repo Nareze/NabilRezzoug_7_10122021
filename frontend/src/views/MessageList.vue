@@ -46,7 +46,7 @@
           <div v-if="message.image" class="picdiv">
             <img class="images" v-bind:src="message.image" alt="" />
           </div>
-<div class="lowerPartMessage">
+        <div class="lowerPartMessage">
           <a v-on:click="modifyMessage(message.id)" class="updateIcon">
             <i class="fas fa-edit"></i>
           </a>
@@ -57,8 +57,54 @@
 
         </div>
 
+        <hr>
+
+
+
+
+
+
+
+        <!-- <div>
+          <form @submit.prevent="submitPost(message.id)">
+            <h3>Commentaires</h3>
+            <textarea v-model="data.content" name="post" id="post" cols="30" rows="10"></textarea>
+            <button class="">Envoyer</button>
+          </form>
+
+
+          <div>
+            <div v-if="post.idPosts === post.id">
+              <div v-for="user in users" v-bind:key="user.id">
+                <div v-if="post.idUsers === user.id">
+                  <span>{{user.username}}</span>
+                </div>
+              </div>
+              <p>{{ post.content}}</p>
+              <p>{{ post.createdAt}}</p>
+            </div>
+          </div>
+        </div> -->
+
+
+
+
+
+
+
+
+
+
+        
+
 
         </div>
+
+
+
+
+
+
       </div>
     </div>
     <FooterItem />
@@ -79,9 +125,11 @@ export default {
       file: "",
       titre: "",
       contenu: "",
+      content:"",
       messages: "",
       users: "",
       errors: [],
+      posts: []
     };
   },
 
@@ -112,12 +160,32 @@ export default {
         });
     },
 
+    submitPost(idPost){
+
+      axios.post(`http://localhost:3000/api/post/${idPost}`, {
+        content: this.data.content,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }, 
+      }
+      )
+      .then(() => {
+        alert("Comment created")
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
+
     deleteMessage(messageId) {
       axios
         .delete(`http://localhost:3000/api/message/${messageId}`, {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
         .then((response) => {
+          alert("Message supprimé")
           console.log(response), this.$router.push("/messageList");
         })
         .catch((err) => {
@@ -146,6 +214,14 @@ export default {
         headers: { Authorization: "Bearer " + localStorage.token },
       })
       .then((response) => (this.users = response.data));
+
+      axios.get(`http://localhost:3000/api/post/`, {
+
+      }).then((response) => {
+        this.posts = response.data.posts;
+      }).catch((error) => {
+        console.log(error)
+      })
   },
 };
 </script>
@@ -197,7 +273,7 @@ hr {
   margin-right: 10%;
   margin-left: 10%;
   border: 3px solid #d4d4d4;
-  border-radius: 7px;
+  border-radius: 10px;
 }
 
 label {

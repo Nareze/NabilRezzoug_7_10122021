@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const path = require("path");
 const userRoutes = require("./routes/user");
 const messageRoutes = require("./routes/message");
+const postRoutes = require('./routes/post')
 const helmet = require("helmet");
 
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/post", postRoutes)
 
 
 module.exports = app;
