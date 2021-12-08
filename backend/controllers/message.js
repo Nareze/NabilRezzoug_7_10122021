@@ -125,12 +125,10 @@ exports.getOneUserMessage = (req, res, next) => {
 
 exports.removeMessage = (req, res, next) => {
   const messageId = req.params.messageId;
-
   const token = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   const userId = decodedToken.userId;
 
-  
   // On cherche le propriétaire du message
   models.User.findOne({
     attributes: ["id", "email", "username", "isAdmin"],
@@ -143,7 +141,6 @@ exports.removeMessage = (req, res, next) => {
         models.Message.findOne({
           where: { id: messageId },
         }).then((message) => {
-          console.log("/////////" + (JSON.stringify(message)))
           // L'utilisateur ne pourra supprimmer que les messages lui appartenant
           if (message.UserId == userId || user.isAdmin == true) {
             models.Message.destroy({

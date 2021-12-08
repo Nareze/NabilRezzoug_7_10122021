@@ -3,7 +3,6 @@
           <form class="sendMessage">
       <h3>Modifier votre message</h3>
       <hr>
-
           <label for="Titre"><b>Nouveau titre</b></label>
           <input type="text" name="newtitre" v-model="newtitre" />
 

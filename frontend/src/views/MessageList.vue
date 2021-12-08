@@ -13,7 +13,7 @@
         <br />
         <label for="Image"><b>Image: </b></label>
         <input type="file" name="image" @change="handleFileUpload($event)" />
-        <button v-on:click="submitFile()">Envoyer</button>
+        <button v-on:click="submitMessage()">Envoyer</button>
       </form>
 
       <div class="messagesList">
@@ -23,29 +23,32 @@
         <div v-for="message of messages" :key="message" class="boxListMessage">
           <!--  Récupération des messages  -->
 
-          <div v-for="user of users" :key="user">
-            <!--  Récupération des utilisateurs  -->
+<div class="test">
+        <div v-for="user of users" :key="user">
+          <!--  Récupération des utilisateurs  -->
 
-            <div v-if="message.UserId === user.id">
-              <span class="pseudo"
-                ><strong>Pseudo : {{ user.username }}</strong></span
-              >
-            </div>
+          <div v-if="message.UserId === user.id">
+            <span class="pseudo"
+              ><strong>Pseudo : {{ user.username }}</strong></span
+            >
           </div>
+        </div>
 
-          <div>
-            <p class="messageTitre">
-              <strong>{{ message.titre }}</strong>
-            </p>
-            <p class="messageContenu">{{ message.contenu }}</p>
-            <p class="messageDate">{{ message.createdAt }}</p>
-          </div>
+        <div>
+          <p class="messageTitre">
+            <strong>{{ message.titre }}</strong>
+          </p>
+          <p class="messageContenu">{{ message.contenu }}</p>
+          <p class="messageDate">{{ message.createdAt }}</p>
+        </div>
+      </div>
 
-          <hr class="changeMessage" />
+        <hr class="changeMessage" />
 
-          <div v-if="message.image" class="picdiv">
-            <img class="images" v-bind:src="message.image" alt="" />
-          </div>
+        <div v-if="message.image" class="picdiv">
+          <img class="images" v-bind:src="message.image" alt="" />
+        </div>
+
         <div class="lowerPartMessage">
           <a v-on:click="modifyMessage(message.id)" class="updateIcon">
             <i class="fas fa-edit"></i>
@@ -57,54 +60,38 @@
 
         </div>
 
-        <hr>
 
 
 
 
 
 
-
-        <!-- <div>
+<div class="reply">
+        <h3>Répondre</h3>
           <form @submit.prevent="submitPost(message.id)">
-            <h3>Commentaires</h3>
-            <textarea v-model="data.content" name="post" id="post" cols="30" rows="10"></textarea>
-            <button class="">Envoyer</button>
+            <textarea v-model="content" name="content" cols="10" rows="5" class="replyTextarea"></textarea>
+            <button class="submitReply">Envoyer</button>
           </form>
 
+<hr>
 
-          <div>
-            <div v-if="post.idPosts === post.id">
-              <div v-for="user in users" v-bind:key="user.id">
-                <div v-if="post.idUsers === user.id">
-                  <span>{{user.username}}</span>
+          <div v-for="post in posts" v-bind:key="post">
+            <div v-if="post.idMessages === message.id">
+              <div v-for="user of users" :key="user">
+                <div v-if="post.UserId === user.id">
+                  <p><strong>{{user.username}}</strong></p>
+                  <p>{{post.content}}</p>
+                  <p>{{post.createdAt}}</p>
                 </div>
               </div>
-              <p>{{ post.content}}</p>
-              <p>{{ post.createdAt}}</p>
             </div>
           </div>
-        </div> -->
-
-
-
-
-
-
-
-
-
-
-        
-
-
         </div>
 
 
 
 
-
-
+        </div>
       </div>
     </div>
     <FooterItem />
@@ -128,8 +115,8 @@ export default {
       content:"",
       messages: "",
       users: "",
+      posts: "",
       errors: [],
-      posts: []
     };
   },
 
@@ -138,7 +125,7 @@ export default {
       this.file = event.target.files[0];
     },
 
-    submitFile() {
+    submitMessage() {
       let formData = new FormData();
 
       formData.append("image", this.file);
@@ -163,16 +150,18 @@ export default {
     submitPost(idPost){
 
       axios.post(`http://localhost:3000/api/post/${idPost}`, {
-        content: this.data.content,
+        content: this.content,
       },
       {
         headers: {
+          Authorization: "Bearer " + localStorage.token,
           "Content-Type": "application/json"
         }, 
       }
       )
       .then(() => {
-        alert("Comment created")
+        alert("Réponse envoyé")
+        window.location.reload()
       })
       .catch((error) => {
         console.log(error)
@@ -185,7 +174,7 @@ export default {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
         .then((response) => {
-          alert("Message supprimé")
+          alert("Message supprimé !")
           console.log(response), this.$router.push("/messageList");
         })
         .catch((err) => {
@@ -218,7 +207,7 @@ export default {
       axios.get(`http://localhost:3000/api/post/`, {
 
       }).then((response) => {
-        this.posts = response.data.posts;
+        this.posts = response.data;
       }).catch((error) => {
         console.log(error)
       })
@@ -237,8 +226,18 @@ li {
 
 /* POST MESSAGE */ ////////////////////////////
 
-.lowerPartMessage{
-  padding-bottom: 75px;
+.submitReply{
+  margin-bottom:50px;
+  width: 200px;
+}
+
+.test{
+  margin-bottom: 75px;
+}
+
+.reply{
+  margin-top: 50px;
+  padding-bottom: 100px;
 }
 
 
@@ -286,6 +285,10 @@ textarea {
   display: inline-block;
   border: none;
   background: #f1f1f1;
+}
+
+.replyTextarea{
+  background: white;
 }
 
 input[type="text"],
@@ -378,9 +381,6 @@ a {
   bottom: 50px;
 }
 
-.changeMessage {
-  margin-bottom: 35px;
-}
 
 .pseudo {
   position: absolute;

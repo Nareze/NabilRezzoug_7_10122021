@@ -107,7 +107,7 @@ export default {
         .delete("http://localhost:3000/api/user/delete", {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
-        .then((response) => console.log(response),window.location.reload(), alert("Account deleted"))
+        .then((response) => console.log(response),/*window.location.reload(),*/ alert("Account deleted"))
         .catch((err) => console.log(err));
     },
   },

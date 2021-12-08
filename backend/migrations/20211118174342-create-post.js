@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      idUsers: {
+      UserId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: { model: "Users", key: "id" },
@@ -23,7 +23,8 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      contenu: {
+      content: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       createdAt: {
