@@ -25,7 +25,7 @@
       <input
         type="text"
         placeholder="Entrer votre nouveau pseudo"
-        name="pseudo"
+        name="username"
         v-model="username"
       />
       <label for="bio"><b>Changer ma bio : </b></label>
@@ -90,26 +90,14 @@ export default {
             },
           }
         )
-
-       .then((response) => {
-          console.log(response);
-          alert(JSON.stringify(response.data));
-          this.$router.push("/messageList");
+        .then(function () {
+          console.log("ENVOYÉ");
+          alert("User updated");
+          window.location.reload();
         })
-        .catch((error) => {
-          alert(JSON.stringify(error.response.data));
+        .catch(function () {
+          console.log("ECHEC");
         });
-
-
-
-        // .then(function (res) {
-        //   console.log(res);
-        //   window.location.reload();
-        //   alert("User updated");
-        // })
-        // .catch(function () {
-        //   console.log("ECHEC");
-        // });
     },
 
 

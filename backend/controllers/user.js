@@ -176,10 +176,13 @@ exports.modify = (req, res, next) => {
   const newPassword = req.body.password;
   const newUsername = req.body.username;
   const newBio = req.body.bio;
+
+
     models.User.findOne({
       where: { id: userId },
     })
     .then((user) => {
+      
       if ((newPassword!=="") )  {
       bcrypt
         .hash(newPassword, 10)
@@ -189,18 +192,23 @@ exports.modify = (req, res, next) => {
           .then(() => {
             return res.status(201).json("Changes updated");
           });
-      } else if((newUsername!=="")){
+      }
+      
+      if((newUsername!=="")){
         models.User.update({ username : newUsername }, { where: { id: user.id } })
         .then(() => {
           return res.status(201).json("Changes updated");
         });
-      } else if((newBio!=="")) {
+      }
+      
+      if((newBio!=="")) {
         models.User.update({ bio: newBio }, { where: { id: user.id } })
         .then(() => {
           return res.status(201).json("Changes updated");
         });
       }
-      }).catch(() => res.status(500).json());
+
+      }).catch(() => res.status(500).json({ error }));
 };
 
 exports.logout = (req, res, next) => {
