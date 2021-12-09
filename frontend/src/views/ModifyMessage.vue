@@ -58,11 +58,11 @@ export default {
           },
         })
           .then((response) => {
-          alert("Message modifié")
           console.log(response),
+          alert(JSON.stringify(response.data))
           this.$router.push("/messageList");
           })
-        .catch((err) => {console.log(err), alert("Vous ne pouvez pas modifier les messages d'autres utilisateurs !"), this.$router.push("/messageList")});
+        .catch((err) => {console.log(err), alert(JSON.stringify(err.response.data)), this.$router.push("/messageList")});
     }
     },
 

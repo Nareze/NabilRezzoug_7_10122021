@@ -53,7 +53,6 @@
 <script>
 import axios from "axios";
 import FooterItem from "../components/Footer.vue"
-// import {useStore} from "vuex"
 
 export default {
   name: "SignUp",
@@ -83,7 +82,7 @@ export default {
           this.$router.push("/messageList");
         })
         .catch((error) => {
-          console.log(error);
+          alert(JSON.stringify(error.response.data));
         });
     },
   },

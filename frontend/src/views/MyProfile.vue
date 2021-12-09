@@ -74,8 +74,7 @@ export default {
   },
 
   methods: {
-
-
+    
     updateUser() {
       axios
         .put(
@@ -91,14 +90,26 @@ export default {
             },
           }
         )
-        .then(function () {
-          console.log("ENVOYÉ");
-          window.location.reload();
-          alert("User updated");
+
+       .then((response) => {
+          console.log(response);
+          alert(JSON.stringify(response.data));
+          this.$router.push("/messageList");
         })
-        .catch(function () {
-          console.log("ECHEC");
+        .catch((error) => {
+          alert(JSON.stringify(error.response.data));
         });
+
+
+
+        // .then(function (res) {
+        //   console.log(res);
+        //   window.location.reload();
+        //   alert("User updated");
+        // })
+        // .catch(function () {
+        //   console.log("ECHEC");
+        // });
     },
 
 

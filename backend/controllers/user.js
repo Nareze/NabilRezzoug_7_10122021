@@ -13,13 +13,13 @@ exports.signup = (req, res, next) => {
     where: { username: req.body.username },
   }).then((usernameFound) => {
     if (usernameFound) {
-      return res.status(409).json({ error: "Username already exists" }); // verification de l'username
+      return res.status(409).json("Username already exists, please try another one"); // verification de l'username
     } else {
       models.User.findOne({
         where: { email: emailCrypted },
       }).then((emailFound) => {
         if (emailFound) {
-          return res.status(409).json({ error: "Email already exists" }); // verification du mail
+          return res.status(409).json("Email already exists, please try another one"); // verification du mail
           } else {
           bcrypt
             .hash(req.body.password, 10)
@@ -67,7 +67,7 @@ exports.login = (req, res, next) => {
         .then((valid) => {
           console.log("contenu valide ////////", valid)
           if (!valid) {
-            res.status(401).json({ message: "Incorrect password" });
+            res.status(401).json("Incorrect password");
           } else {
             res.status(200).json({
               userId: user.id,
@@ -90,7 +90,7 @@ exports.login = (req, res, next) => {
 
         }).catch(() => res.status(500).json());
     } else {
-      res.status(401).json({ message: "User not found" });
+      res.status(401).json("User not found");
     }
   });
 };
@@ -187,17 +187,17 @@ exports.modify = (req, res, next) => {
             models.User.update({ password: hash }, { where: { id: user.id } })
            })
           .then(() => {
-            return res.status(201).json({ message: "Changes updated" });
+            return res.status(201).json("Changes updated");
           });
       } else if((newUsername!=="")){
         models.User.update({ username : newUsername }, { where: { id: user.id } })
         .then(() => {
-          return res.status(201).json({ message: "Changes updated" });
+          return res.status(201).json("Changes updated");
         });
       } else if((newBio!=="")) {
         models.User.update({ bio: newBio }, { where: { id: user.id } })
         .then(() => {
-          return res.status(201).json({ message: "Changes updated" });
+          return res.status(201).json("Changes updated");
         });
       }
       }).catch(() => res.status(500).json());

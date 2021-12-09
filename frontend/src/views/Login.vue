@@ -60,7 +60,7 @@ export default {
           this.$router.push("/messageList");
         })
         .catch((error) => {
-          console.log(error);
+          alert( JSON.stringify(error.response.data));
         });
     },
   },
