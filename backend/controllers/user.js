@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const models = require("../models");
 const cryptoJS = require("crypto-js");
 const dotenv = require("dotenv");
+const sequelize = require("sequelize");
 dotenv.config();
 
 exports.signup = (req, res, next) => {
@@ -100,7 +101,14 @@ exports.profile = (req, res, next) => {
   const userId = decodedToken.userId;
 
   models.User.findOne({
-    attributes: ["id", "username", "bio", "createdAt"],
+    attributes: ["id", "username", "bio", [
+      sequelize.fn(
+        "date_format",
+        sequelize.col("createdAt"),
+        "%d %M %Y - %H:%i:%s "
+      ),
+      "createdAt",
+    ] ],
     where: { id: userId },
   }).then((user) => {
     if (!user) {
@@ -116,7 +124,14 @@ exports.profile = (req, res, next) => {
 
 exports.profiles = (req, res, next) => {
   models.User.findAll({
-    attributes: ["username", "bio", "image", "createdAt", "id"],
+    attributes: ["username", "bio", "image", [
+      sequelize.fn(
+        "date_format",
+        sequelize.col("createdAt"),
+        "%d %M %Y - %H:%i:%s "
+      ),
+      "createdAt",
+    ], "id"],
   })
     .then((user) => {
       if (user != null) {

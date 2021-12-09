@@ -1,13 +1,13 @@
 <template>
-    <div class="container">
+    <div class="container" >
           <form class="sendMessage">
       <h3>Modifier votre message</h3>
       <hr>
           <label for="Titre"><b>Nouveau titre</b></label>
           <input type="text" name="newtitre" v-model="newtitre" />
-
+          
           <label for="Contenu"><b>Nouveau message</b></label>
-          <textarea type="text" name="newcontenu" v-model="newcontenu" />
+          <textarea type="text" name="newcontenu"  v-model="newcontenu" />
           
           <br>
           <label for="Image"><b>Nouvelle Image</b></label>
@@ -32,9 +32,11 @@ export default {
     name: "updateMessage",
     data() {
         return {
+          dato:{},
             newtitre:"",
             newcontenu:"",
-            file:""
+            file:"",
+            messages:"",
         }
     },
     methods:{
@@ -57,11 +59,13 @@ export default {
         })
           .then((response) => {
           alert("Message modifié")
-          console.log(response), this.$router.push("/messageList");
+          console.log(response),
+          this.$router.push("/messageList");
           })
-        .catch((err) => {console.log(err), alert("Vous ne pouvez pas supprimer les messages d'autres utilisateurs !"), this.$router.push("/messageList")});
+        .catch((err) => {console.log(err), alert("Vous ne pouvez pas modifier les messages d'autres utilisateurs !"), this.$router.push("/messageList")});
     }
-    }
+    },
+
 }
 </script>
 

@@ -5,9 +5,10 @@
 
     <div>
       <ul v-for="user of users" :key="user">
-        <li>{{ user.username }}</li>
+        <li><strong>{{ user.username }}</strong></li>
         <li>{{ user.bio }}</li>
         <li>{{ user.createdAt }}</li>
+        <hr>
       </ul>
     </div>
   </div>

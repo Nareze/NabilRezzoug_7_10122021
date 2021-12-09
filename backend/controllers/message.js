@@ -1,6 +1,7 @@
 const models = require("../models");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const sequelize = require("sequelize")
 dotenv.config();
 
 exports.createMessage = (req, res, next) => {
@@ -62,7 +63,14 @@ exports.createMessage = (req, res, next) => {
 
 exports.getAllUsersMessages = (req, res, next) => {
   models.Message.findAll({
-    attributes: ["createdAt", "titre", "contenu", "image", "UserId", "id"],
+    attributes: ["createdAt", "titre", "contenu", "image", "UserId", "id",[
+      sequelize.fn(
+        "date_format",
+        sequelize.col("createdAt"),
+        "%d %M %Y - %H:%i:%s "
+      ),
+      "createdAt",
+    ],],
     order: [["createdAt", "DESC"]],
   })
     .then((messages) => {
@@ -167,11 +175,22 @@ exports.modifyMessage = (req, res, next) => {
   const titre = req.body.newtitre;
   const contenu = req.body.newcontenu;
 
-  models.Message.findOne({
-    where: {id: messageId}
-  }).then((message) => {
-    if (message){
-      message.update({
+  const token = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decodedToken.userId;
+
+
+  models.User.findOne({
+    attributes: ["id", "email", "username", "isAdmin"],
+    where: { id: userId },
+  })
+  .then((user) => {
+    if (user || user.isAdmin == true) {
+      models.Message.findOne({
+        where: {id: messageId}
+      }) .then((message) => {
+        if (message.UserId == userId || user.isAdmin == true) {
+        message.update({
         titre:titre,
         contenu: contenu,
         image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : message.image,
@@ -180,17 +199,49 @@ exports.modifyMessage = (req, res, next) => {
         res.status(200).json({
           message:"Post updated",
           message: message,
-        })
+        })       
+      }).catch((err) => res.status(500).json(err));
+        } else {
+          res
+            .status(405)
+            .json({ error: "Not allowed to modify others messages" });
+        }
       })
-      .catch(() => {
-        res.status(500).json({
-          message:"Not updated"
-        })
-      })
-    } else {
-      res.status(404).json({
-        message:"Post not found"
-      })
+
     }
   })
+
+
+
+
+  // models.Message.findOne({
+  //   where: {id: messageId}
+  // }).then((message) => {
+  //   if (message){
+  //     message.update({
+  //       titre:titre,
+  //       contenu: contenu,
+  //       image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : message.image,
+  //     })
+  //     .then((message) => {
+  //       res.status(200).json({
+  //         message:"Post updated",
+  //         message: message,
+  //       })
+  //     })
+  //     .catch(() => {
+  //       res.status(500).json({
+  //         message:"Not updated"
+  //       })
+  //     })
+  //   } else {
+  //     res.status(404).json({
+  //       message:"Post not found"
+  //     })
+  //   }
+  // })
+
+
+
+
 };

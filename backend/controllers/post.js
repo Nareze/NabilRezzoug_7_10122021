@@ -1,6 +1,7 @@
 const models = require("../models");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const sequelize = require("sequelize");
 dotenv.config();
 
 
@@ -36,7 +37,14 @@ exports.createPost = (req, res, next) => {
 exports.getAllPosts = (req, res, next) => {
 
     models.Post.findAll({
-        attributes: ["id", "content", "UserId", "idMessages", "createdAt"]
+        attributes: ["id", "content", "UserId", "idMessages", [
+          sequelize.fn(
+            "date_format",
+            sequelize.col("createdAt"),
+            "%d %M %Y - %H:%i:%s "
+          ),
+          "createdAt",
+        ]]
     })
     .then((posts) => {
         if (posts) {

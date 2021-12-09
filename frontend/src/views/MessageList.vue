@@ -43,11 +43,14 @@
         </div>
       </div>
 
-        <hr class="changeMessage" />
+        
 
         <div v-if="message.image" class="picdiv">
           <img class="images" v-bind:src="message.image" alt="" />
         </div>
+
+        <hr class="changeMessage" />
+
 
         <div class="lowerPartMessage">
           <a v-on:click="modifyMessage(message.id)" class="updateIcon">
@@ -79,9 +82,10 @@
             <div v-if="post.idMessages === message.id">
               <div v-for="user of users" :key="user">
                 <div v-if="post.UserId === user.id">
-                  <p><strong>{{user.username}}</strong></p>
+                  <p><strong class="pseudoReply">Pseudo : {{user.username}}</strong></p>
                   <p>{{post.content}}</p>
                   <p>{{post.createdAt}}</p>
+                  <hr>
                 </div>
               </div>
             </div>
@@ -229,6 +233,11 @@ li {
 .submitReply{
   margin-bottom:50px;
   width: 200px;
+}
+
+.pseudoReply{
+  position: absolute;
+  left: 10px;
 }
 
 .test{
