@@ -1,11 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const auth = require('../middlewares/auth');
+const auth = require("../middlewares/auth");
+const postCtrl = require("../controllers/post");
 
-const postCtrl = require("../controllers/post")
-
-
-router.post("/:idMessage", postCtrl.createPost)
-router.get("/", postCtrl.getAllPosts)
+router.post("/:idMessage", auth, postCtrl.createPost);
+router.get("/", auth, postCtrl.getAllPosts);
 
 module.exports = router;

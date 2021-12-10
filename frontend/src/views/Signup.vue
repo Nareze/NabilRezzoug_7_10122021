@@ -1,67 +1,66 @@
 <template>
-<div>
-  <div class="container">
-    <form v-on:submit.prevent="submitForm">
-      <h2>Merci de remplir tous les champs pour s'inscrire</h2>
+  <div>
+    <div class="container">
+      <form v-on:submit.prevent="submitForm">
+        <h2>Merci de remplir tous les champs pour s'inscrire</h2>
 
-      <label for="email"><b>Adresse Mail</b></label>
-      <input
-        type="text"
-        placeholder="Entrer l'Email"
-        name="email"
-        required
-        v-model="form.email"
-      />
+        <label for="email"><b>Adresse Mail</b></label>
+        <input
+          type="text"
+          placeholder="Entrer l'Email"
+          name="email"
+          required
+          v-model="form.email"
+        />
 
-      <label for="password"><b>Mot de passe</b></label>
-      <input
-        type="password"
-        placeholder="Entrer le mot de passe"
-        name="password"
-        required
-        v-model="form.password"
-      />
+        <label for="password"><b>Mot de passe</b></label>
+        <input
+          type="password"
+          placeholder="Entrer le mot de passe"
+          name="password"
+          required
+          v-model="form.password"
+        />
 
-      <label for="username"><b>Nom d'utilisateur</b></label>
-      <input
-        type="text"
-        placeholder="Entrer le nom d'utilisateur"
-        name="username"
-        required
-        v-model="form.username"
-      />
+        <label for="username"><b>Nom d'utilisateur</b></label>
+        <input
+          type="text"
+          placeholder="Entrer le nom d'utilisateur"
+          name="username"
+          required
+          v-model="form.username"
+        />
 
-      <label for="bio"><b>Description</b></label>
-      <input
-        type="text"
-        placeholder="Présentez vous en quelque mots"
-        name="bio"
-        required
-        v-model="form.bio"
-      />
+        <label for="bio"><b>Description</b></label>
+        <input
+          type="text"
+          placeholder="Présentez vous en quelque mots"
+          name="bio"
+          required
+          v-model="form.bio"
+        />
 
-      <div class="submitForm">
-        <button type="submit" class="signupbtn">Je m'inscris</button>
-      </div>
-    </form>
-  </div>
+        <div class="submitForm">
+          <button type="submit" class="signupbtn">Je m'inscris</button>
+        </div>
+      </form>
+    </div>
 
-  <FooterItem/>
+    <FooterItem />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import FooterItem from "../components/Footer.vue"
+import FooterItem from "../components/Footer.vue";
 
 export default {
   name: "SignUp",
-    components:{
-    FooterItem
+  components: {
+    FooterItem,
   },
 
   data() {
-    
     return {
       form: {
         email: "",
@@ -82,25 +81,18 @@ export default {
           this.$router.push("/messageList");
         })
         .catch((error) => {
-          alert(JSON.stringify(error.response.data));
+          alert(JSON.stringify(error.response.data)); // affichage des informations manquantes
         });
     },
   },
-
 };
 </script>
 
 <style lang="scss">
-
-.submitForm{
+.submitForm {
   margin-top: 35px;
 }
 
-
-
 @media screen and (max-width: 300px) {
 }
-
-
-
 </style>

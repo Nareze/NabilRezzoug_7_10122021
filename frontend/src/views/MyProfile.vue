@@ -1,66 +1,63 @@
 <template>
-<div>
-  <div class="container">
-
-    <div class="MyInfos">
-      <h2>Mes Infos</h2>
-      <p><strong>Mon Pseudo :</strong> {{ user.username }}</p>
-      <p><strong>Ma bio :</strong> {{ user.bio }}</p>
-      <p><strong>Ma date d'inscription :</strong> {{ user.createdAt }}</p>
-    </div>
-
-    <div class="modifyAccount">
-      <h2>Modifier mon compte</h2>
-      <p> <strong>(Veulliez remplir tous les champs) </strong> </p>
-
-          <div class="modifyAccount">
-      <label for="email"><b>Changer mon mot de passe : </b></label>
-      <input
-        type="password"
-        placeholder="Entrer votre nouveau mot de passe"
-        name="password"
-        v-model="password"
-      />
-      <label for="pseudo"><b>Changer mon pseudo : </b></label>
-      <input
-        type="text"
-        placeholder="Entrer votre nouveau pseudo"
-        name="username"
-        v-model="username"
-      />
-      <label for="bio"><b>Changer ma bio : </b></label>
-      <input
-        type="text"
-        placeholder="Entrer votre bio"
-        name="bio"
-        v-model="bio"
-      />
-    </div>
-
-      <br />
-      <div>
-        <button v-on:click="updateUser()">Envoyer</button>
+  <div>
+    <div class="container">
+      <div class="MyInfos">
+        <h2>Mes Infos</h2>
+        <p><strong>Mon Pseudo :</strong> {{ user.username }}</p>
+        <p><strong>Ma bio :</strong> {{ user.bio }}</p>
+        <p><strong>Ma date d'inscription :</strong> {{ user.createdAt }}</p>
       </div>
 
-  </div>
+      <div class="modifyAccount">
+        <h2>Modifier mon compte</h2>
+        <p><strong>(Veulliez remplir tous les champs) </strong></p>
 
-  <div class="delete">
-    <h2>Supprimer mon compte</h2>
-      <button v-on:click="deleteUser()">Supprimer</button>
+        <div class="modifyAccount">
+          <label for="email"><b>Changer mon mot de passe : </b></label>
+          <input
+            type="password"
+            placeholder="Entrer votre nouveau mot de passe"
+            name="password"
+            v-model="password"
+          />
+          <label for="pseudo"><b>Changer mon pseudo : </b></label>
+          <input
+            type="text"
+            placeholder="Entrer votre nouveau pseudo"
+            name="username"
+            v-model="username"
+          />
+          <label for="bio"><b>Changer ma bio : </b></label>
+          <input
+            type="text"
+            placeholder="Entrer votre bio"
+            name="bio"
+            v-model="bio"
+          />
+        </div>
+
+        <br />
+        <div>
+          <button v-on:click="updateUser()">Envoyer</button>
+        </div>
+      </div>
+
+      <div class="delete">
+        <h2>Supprimer mon compte</h2>
+        <button v-on:click="deleteUser()">Supprimer</button>
+      </div>
     </div>
-  </div>
 
-
-  <FooterItem/>
+    <FooterItem />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import FooterItem from "../components/Footer.vue"
+import FooterItem from "../components/Footer.vue";
 
 export default {
-    components:{
+  components: {
     FooterItem,
   },
   data() {
@@ -69,12 +66,11 @@ export default {
       password: "",
       username: "",
       bio: "",
-      messages:""
+      messages: "",
     };
   },
 
   methods: {
-    
     updateUser() {
       axios
         .put(
@@ -91,7 +87,7 @@ export default {
           }
         )
         .then(function () {
-          console.log("ENVOYÉ");
+          console.log("Updated");
           alert("User updated");
           window.location.reload();
         })
@@ -100,15 +96,17 @@ export default {
         });
     },
 
-
     deleteUser() {
       axios
         .delete("http://localhost:3000/api/user/delete", {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
-        .then((response) => console.log(response),window.location.reload(), alert("Account deleted"))
+        .then(
+          (response) => console.log(response),
+          window.location.reload(),
+          alert("Account deleted")
+        )
         .catch((err) => console.log(err));
-
     },
   },
 
@@ -123,13 +121,13 @@ export default {
 </script>
 
 <style lang="scss">
-.MyInfos{
+.MyInfos {
   margin-top: 75px;
 }
-.delete{
+.delete {
   margin-top: 100px;
 }
-.modifyAccount{
+.modifyAccount {
   margin-top: 75px;
 }
 

@@ -18,83 +18,81 @@
 
       <div class="messagesList">
         <h3>Mur des messages</h3>
-        <hr class="wall">
+        <hr class="wall" />
 
         <div v-for="message of messages" :key="message" class="boxListMessage">
           <!--  Récupération des messages  -->
 
-<div class="test">
-        <div v-for="user of users" :key="user">
-          <!--  Récupération des utilisateurs  -->
+          <div class="test">
+            <div v-for="user of users" :key="user">
+              <!--  Récupération des utilisateurs pour afficher le pseudo -->
 
-          <div v-if="message.UserId === user.id">
-            <span class="pseudo"
-              ><strong>Pseudo : {{ user.username }}</strong></span
-            >
+              <div v-if="message.UserId === user.id">
+                <span class="pseudo"
+                  ><strong>Pseudo : {{ user.username }}</strong></span
+                >
+              </div>
+            </div>
+
+            <div>
+              <p class="messageTitre">
+                <strong>{{ message.titre }}</strong>
+              </p>
+              <p class="messageContenu">{{ message.contenu }}</p>
+              <p class="messageDate">{{ message.createdAt }}</p>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <p class="messageTitre">
-            <strong>{{ message.titre }}</strong>
-          </p>
-          <p class="messageContenu">{{ message.contenu }}</p>
-          <p class="messageDate">{{ message.createdAt }}</p>
-        </div>
-      </div>
+          <div v-if="message.image" class="picdiv">
+            <img class="images" v-bind:src="message.image" alt="" />
+          </div>
 
-        
+          <hr class="changeMessage" />
 
-        <div v-if="message.image" class="picdiv">
-          <img class="images" v-bind:src="message.image" alt="" />
-        </div>
+          <div class="lowerPartMessage">
+            <a v-on:click="modifyMessage(message.id)" class="updateIcon">
+              <i class="fas fa-edit"></i>
+            </a>
 
-        <hr class="changeMessage" />
+            <a href="#" v-on:click="deleteMessage(message.id)">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </div>
 
+          <!--  Répondre aux messages -->
 
-        <div class="lowerPartMessage">
-          <a v-on:click="modifyMessage(message.id)" class="updateIcon">
-            <i class="fas fa-edit"></i>
-          </a>
+          <div class="reply">
+            <h3>Répondre</h3>
+            <form @submit.prevent="submitPost(message.id)">
+              <textarea
+                v-model="content"
+                name="content"
+                cols="10"
+                rows="5"
+                class="replyTextarea"
+              ></textarea>
+              <button class="submitReply">Envoyer</button>
+            </form>
 
-          <a href="#" v-on:click="deleteMessage(message.id)">
-            <i class="fas fa-trash-alt"></i>
-          </a>
+            <hr />
 
-        </div>
-
-
-
-
-
-
-
-<div class="reply">
-        <h3>Répondre</h3>
-          <form @submit.prevent="submitPost(message.id)">
-            <textarea v-model="content" name="content" cols="10" rows="5" class="replyTextarea"></textarea>
-            <button class="submitReply">Envoyer</button>
-          </form>
-
-<hr>
-
-          <div v-for="post in posts" v-bind:key="post">
-            <div v-if="post.idMessages === message.id">
-              <div v-for="user of users" :key="user">
-                <div v-if="post.UserId === user.id">
-                  <p><strong class="pseudoReply">Pseudo : {{user.username}}</strong></p>
-                  <p>{{post.content}}</p>
-                  <p>{{post.createdAt}}</p>
-                  <hr>
+            <div v-for="post in posts" v-bind:key="post">
+              <div v-if="post.idMessages === message.id">
+                <div v-for="user of users" :key="user">
+                  <div v-if="post.UserId === user.id">
+                    <p>
+                      <strong class="pseudoReply"
+                        >Pseudo : {{ user.username }}</strong
+                      >
+                    </p>
+                    <p>{{ post.content }}</p>
+                    <p>{{ post.createdAt }}</p>
+                    <hr />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-
-
-
         </div>
       </div>
     </div>
@@ -116,7 +114,7 @@ export default {
       file: "",
       titre: "",
       contenu: "",
-      content:"",
+      content: "",
       messages: "",
       users: "",
       posts: "",
@@ -151,25 +149,27 @@ export default {
         });
     },
 
-    submitPost(idPost){
-
-      axios.post(`http://localhost:3000/api/post/${idPost}`, {
-        content: this.content,
-      },
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-          "Content-Type": "application/json"
-        }, 
-      }
-      )
-      .then(() => {
-        alert("Réponse envoyé")
-        window.location.reload()
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    submitPost(idPost) {
+      axios
+        .post(
+          `http://localhost:3000/api/post/${idPost}`,
+          {
+            content: this.content,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          alert("Réponse envoyé");
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     deleteMessage(messageId) {
@@ -178,7 +178,7 @@ export default {
           headers: { Authorization: "Bearer " + localStorage.token },
         })
         .then((response) => {
-          alert("Message supprimé !")
+          alert("Message supprimé !");
           console.log(response), this.$router.push("/messageList");
         })
         .catch((err) => {
@@ -208,13 +208,14 @@ export default {
       })
       .then((response) => (this.users = response.data));
 
-      axios.get(`http://localhost:3000/api/post/`, {
-
-      }).then((response) => {
+    axios
+      .get(`http://localhost:3000/api/post/`, {})
+      .then((response) => {
         this.posts = response.data;
-      }).catch((error) => {
-        console.log(error)
       })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
@@ -228,27 +229,26 @@ li {
   list-style-type: none;
 }
 
-/* POST MESSAGE */ ////////////////////////////
+/* ENVOYER MESSAGE */ ////////////////////////////
 
-.submitReply{
-  margin-bottom:50px;
+.submitReply {
+  margin-bottom: 50px;
   width: 200px;
 }
 
-.pseudoReply{
+.pseudoReply {
   position: absolute;
   left: 10px;
 }
 
-.test{
+.test {
   margin-bottom: 75px;
 }
 
-.reply{
+.reply {
   margin-top: 50px;
   padding-bottom: 100px;
 }
-
 
 .messagesList {
   margin-top: 100px;
@@ -296,7 +296,7 @@ textarea {
   background: #f1f1f1;
 }
 
-.replyTextarea{
+.replyTextarea {
   background: white;
 }
 
@@ -333,9 +333,9 @@ button:hover {
   transition: 300ms;
 }
 
-/* LISTE MESSAGES */ //////////////////////////////////
+/* LISTE DES MESSAGES */ //////////////////////////////////
 
-.wall{
+.wall {
   margin-bottom: 55px;
 }
 .boxListMessage:nth-child(odd) {
@@ -390,7 +390,6 @@ a {
   bottom: 50px;
 }
 
-
 .pseudo {
   position: absolute;
   left: 10px;
@@ -410,15 +409,8 @@ a {
     border: none;
   }
   .messageTitre {
-  position: relative;
-  bottom: -12px;
+    position: relative;
+    bottom: -12px;
+  }
 }
-
-}
-
-
-
-
-
-
 </style>

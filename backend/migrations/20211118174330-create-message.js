@@ -10,11 +10,11 @@ module.exports = {
       },
       UserId: {
         type: Sequelize.INTEGER,
-        references: {
+        references: {                 // un message devra faire reference à un user
           model: 'Users',
           key: 'id'
         },
-        onUpdate: 'CASCADE',
+        onUpdate: 'CASCADE',        // après suppresion d'un utilisateur, ses messages devront être supprimés
         onDelete: 'CASCADE',
       },
       titre: {

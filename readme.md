@@ -33,7 +33,7 @@ Lancer les servers : cd backend > npm run start, cd frontend > npm run serve
 ### Important
 
 ```
-Dans le frontend si une erreur est présente dans la commande "npm install" veuillez installer nvm https://github.com/nvm-sh/nvm puis changer la version de node à v14.18.1 :
+Dans le frontend si une erreur est présente avec la commande "npm install" veuillez installer nvm https://github.com/nvm-sh/nvm puis changer la version de node à v14.18.1 :
 
 Nvm install 14.18.1
 Nvm use 14.18.1

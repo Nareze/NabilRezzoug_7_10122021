@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       models.Message.belongsTo(models.User, {
         foreignKey: {
           allowNull: false,
-          foreignKey: "UserId",         // ajouter la foreign key
-          onDelete: 'cascade',
+          foreignKey: "UserId",         // ajouter la foreign key pour identifier le propiétaire du message
+          onDelete: 'cascade',          // si un utilisateur est supprimé ses messages le devront être également
           hooks: true,
         }
       });

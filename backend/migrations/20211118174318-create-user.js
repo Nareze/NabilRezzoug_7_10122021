@@ -5,7 +5,7 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true,         // clé primaire
         type: Sequelize.INTEGER
       },
       email: {
