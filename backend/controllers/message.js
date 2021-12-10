@@ -176,9 +176,6 @@ exports.modifyMessage = (req, res, next) => {
 
 
 
-/////////// Ajouts en supplémentaire facultatifs :
-
-
 
 
 // exports.getUserMessages = (req, res, next) => {

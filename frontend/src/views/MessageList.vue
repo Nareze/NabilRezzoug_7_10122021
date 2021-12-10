@@ -373,7 +373,7 @@ button:hover {
 }
 
 .images {
-  width: 200px;
+  width: 50%;
 }
 
 .container {

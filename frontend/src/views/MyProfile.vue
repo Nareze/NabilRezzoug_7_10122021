@@ -86,13 +86,13 @@ export default {
             },
           }
         )
-        .then(function () {
-          console.log("Updated");
+        .then((response) => {
+          console.log(response);
           alert("User updated");
           window.location.reload();
         })
-        .catch(function () {
-          console.log("ECHEC");
+        .catch((error) => {
+          alert(JSON.stringify(error.response.data)); // affichage des informations manquantes
         });
     },
 

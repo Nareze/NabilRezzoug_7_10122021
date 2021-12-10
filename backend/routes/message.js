@@ -9,7 +9,6 @@ router.get("/users", auth, messageCtrl.getAllUsersMessages); // voir tout les me
 router.delete("/:messageId", auth, messageCtrl.removeMessage);
 router.put("/:id", auth, multer, messageCtrl.modifyMessage);
 
-//    Ajouts supplémentaires facultatifs :
 // router.get("/", messageCtrl.getOneUserMessage);
 // router.get("/user", messageCtrl.getUserMessages);
 
