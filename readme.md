@@ -1,12 +1,23 @@
 ## Installations
 
 ```
-Installer NodeJs
-Installer NPM (globally)
-Installer nodemon (globally)
-Installer sequelize (globally)
-Installer Vue (globally)
-Installer MySQL
+NodeJs
+https://nodejs.org/en/download/
+
+NPM
+npm install -g npm
+
+Nodemon
+npm install -g nodemon
+
+Sequelize
+npm install -g sequelize-cli
+
+Vue
+npm install -g @vue/cli
+
+MySQL
+https://dev.mysql.com/downloads/installer/
 ```
 
 ### Lancer l'application
@@ -21,9 +32,9 @@ JWT_SECRET = XXX
 JWT_EXPIRATION = "XXh" 
 EMAIL_SECRET = XXX
 
-Creer un dossier "images" dans le backend
+Creer un dossier "images" dans le dossier backend
 
-Lier mySQL avec le config.json : remplir les champs username et password
+Lier mySQL avec le fichier config.json dans le dossier backend : remplir les champs username et password
 
 Migrer la base de donnée vers mySQL : sequelize db:create puis sequelize db:migrate
 
