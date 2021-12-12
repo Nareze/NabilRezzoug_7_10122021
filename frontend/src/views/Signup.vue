@@ -11,6 +11,7 @@
           name="email"
           required
           v-model="form.email"
+          maxlength="50"
         />
 
         <label for="password"><b>Mot de passe</b></label>
@@ -20,6 +21,7 @@
           name="password"
           required
           v-model="form.password"
+          maxlength="50"
         />
 
         <label for="username"><b>Nom d'utilisateur</b></label>
@@ -29,6 +31,7 @@
           name="username"
           required
           v-model="form.username"
+          maxlength="25"
         />
 
         <label for="bio"><b>Description</b></label>
@@ -38,6 +41,7 @@
           name="bio"
           required
           v-model="form.bio"
+          maxlength="25"
         />
 
         <div class="submitForm">

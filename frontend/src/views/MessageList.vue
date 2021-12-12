@@ -5,10 +5,10 @@
         <h3>Envoyer un message</h3>
         <hr />
         <label for="Titre"><b>Titre:</b></label>
-        <input type="text" name="titre" v-model="titre" />
+        <input type="text" name="titre" v-model="titre" maxlength="70" required />
 
         <label for="Contenu"><b>Message: </b></label>
-        <textarea type="text" name="contenu" v-model="contenu" />
+        <textarea type="text" name="contenu" v-model="contenu" maxlength="140" required />
 
         <br />
         <label for="Image"><b>Image: </b></label>
@@ -23,7 +23,7 @@
         <div v-for="message of messages" :key="message" class="boxListMessage">
           <!--  Récupération des messages  -->
 
-          <div class="test">
+          <div class="userList">
             <div v-for="user of users" :key="user">
               <!--  Récupération des utilisateurs pour afficher le pseudo -->
 
@@ -241,7 +241,7 @@ li {
   left: 10px;
 }
 
-.test {
+.userList {
   margin-bottom: 75px;
 }
 
@@ -256,6 +256,10 @@ li {
 
 a {
   cursor: pointer;
+}
+
+.messageContenu{
+  overflow-wrap: break-word;
 }
 
 h3 {
